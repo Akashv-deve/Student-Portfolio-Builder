@@ -1,0 +1,119 @@
+/* --- Global Skills Variables --- */
+:root {
+  --primary-blue: #0056d2;
+  --bg-white: #ffffff;
+  --bg-section: #ffffff; /* Keeping it white to contrast with the light gray About section */
+  --text-dark: #1a1a1a;
+  --text-gray: #555555;
+  --card-border: #eaedf1;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --card-hover-shadow: 0 16px 32px rgba(0, 86, 210, 0.1);
+}
+
+/* --- Base Section Styles --- */
+.skills-section {
+  background-color: var(--bg-section);
+  padding: 100px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.skills-container {
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* --- Header Styles --- */
+.skills-header {
+  text-align: center;
+  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skills-title {
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 16px;
+}
+
+.skills-divider {
+  width: 60px;
+  height: 4px;
+  background-color: var(--primary-blue);
+  border-radius: 2px;
+}
+
+/* --- Grid Layout --- */
+.skills-grid {
+  display: grid;
+  /* Automatically fits as many 300px columns as possible */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+/* --- Card Styles --- */
+.skill-card {
+  background-color: var(--bg-white);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover Animation */
+.skill-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-hover-shadow);
+  border-color: var(--primary-blue);
+}
+
+/* Emoji Icon Styling */
+.skill-icon {
+  font-size: 3rem;
+  margin-bottom: 24px;
+  display: inline-block;
+  /* Adds a subtle bounce to the icon on card hover */
+  transition: transform 0.3s ease;
+}
+
+.skill-card:hover .skill-icon {
+  transform: scale(1.1);
+}
+
+.skill-card-title {
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.skill-card-description {
+  font-size: 1rem;
+  color: var(--text-gray);
+  line-height: 1.6;
+}
+
+/* --- Mobile Responsiveness --- */
+@media screen and (max-width: 768px) {
+  .skills-section {
+    padding: 60px 20px;
+  }
+
+  .skills-title {
+    font-size: 2rem;
+  }
+
+  .skills-grid {
+    gap: 20px;
+  }
+  
+  .skill-card {
+    padding: 32px 24px;
+  }
+}
