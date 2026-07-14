@@ -1,0 +1,114 @@
+/* --- Global About Variables --- */
+:root {
+  --primary-blue: #0056d2;
+  --primary-blue-light: #e6f0ff;
+  --bg-light: #f8f9fa;
+  --bg-white: #ffffff;
+  --text-dark: #1a1a1a;
+  --text-gray: #555555;
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --card-hover-shadow: 0 12px 32px rgba(0, 86, 210, 0.12);
+}
+
+/* --- Base About Styles --- */
+.about-section {
+  background-color: var(--bg-light);
+  padding: 100px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.about-container {
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* --- Header Section --- */
+.about-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 60px auto;
+}
+
+.about-title {
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.about-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-gray);
+  line-height: 1.6;
+}
+
+/* --- Features Grid --- */
+.features-grid {
+  display: grid;
+  /* Auto-fit grid creates responsive columns automatically */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+/* --- Feature Cards --- */
+.feature-card {
+  background-color: var(--bg-white);
+  padding: 40px 32px;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.icon-wrapper {
+  background-color: var(--primary-blue-light);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px auto;
+  color: var(--primary-blue);
+}
+
+.feature-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.feature-description {
+  font-size: 1rem;
+  color: var(--text-gray);
+  line-height: 1.6;
+}
+
+/* --- Mobile Responsiveness --- */
+@media screen and (max-width: 768px) {
+  .about-section {
+    padding: 60px 20px;
+  }
+
+  .about-title {
+    font-size: 2rem;
+  }
+
+  .features-grid {
+    gap: 24px;
+  }
+}

@@ -1,0 +1,217 @@
+/* --- Global Hero Variables --- */
+:root {
+  --primary-blue: #0056d2;
+  --primary-blue-hover: #0043a8;
+  --bg-white: #ffffff;
+  --text-dark: #1a1a1a;
+  --text-light: #555555;
+  --gray-light: #f4f6f8;
+  --gray-border: #e1e4e8;
+}
+
+/* --- Base Hero Styles --- */
+.hero-section {
+  background-color: var(--bg-white);
+  padding: 80px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Assuming your Navbar is 70px tall, this takes the rest of the screen */
+  min-height: calc(100vh - 70px); 
+}
+
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 100%;
+  gap: 40px;
+}
+
+/* --- Content Section (Left) --- */
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  color: var(--text-dark);
+  line-height: 1.15;
+  margin-bottom: 24px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.btn {
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-blue);
+  color: var(--bg-white);
+  box-shadow: 0 4px 12px rgba(0, 86, 210, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 86, 210, 0.3);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+.btn-secondary:hover {
+  background-color: var(--gray-light);
+  transform: translateY(-2px);
+}
+
+/* --- Image Placeholder (Right) --- */
+.hero-image-placeholder {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Pure CSS Browser Mockup */
+.mockup-window {
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--bg-white);
+  border: 1px solid var(--gray-border);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mockup-header {
+  background-color: var(--gray-light);
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--gray-border);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.close { background-color: #ff5f56; }
+.dot.minimize { background-color: #ffbd2e; }
+.dot.expand { background-color: #27c93f; }
+
+.mockup-body {
+  padding: 32px 24px;
+  background-color: #fafbfc;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 320px;
+}
+
+/* Skeleton UI Blocks */
+.skeleton-title {
+  height: 24px;
+  width: 60%;
+  background-color: #e1e4e8;
+  border-radius: 6px;
+}
+
+.skeleton-text {
+  height: 12px;
+  width: 100%;
+  background-color: #e1e4e8;
+  border-radius: 4px;
+}
+
+.skeleton-text.short {
+  width: 80%;
+}
+
+.skeleton-cards {
+  display: flex;
+  gap: 16px;
+  margin-top: auto; /* Pushes cards to the bottom */
+  height: 100px;
+}
+
+.skeleton-card {
+  flex: 1;
+  background-color: var(--bg-white);
+  border: 1px solid var(--gray-border);
+  border-radius: 8px;
+}
+
+/* --- Mobile Responsiveness --- */
+@media screen and (max-width: 968px) {
+  .hero-container {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-title {
+    font-size: 2.8rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .hero-section {
+    padding: 40px 20px;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+
+  .mockup-body {
+    height: 240px;
+  }
+}
