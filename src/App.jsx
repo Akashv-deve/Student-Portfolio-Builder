@@ -8,6 +8,8 @@ import Projects from './components/Projects';
 import Education from './components/Education';
 import Footer from './components/Footer';
 import SoftwareEngineer from './templates/SoftwareEngineer';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 function App() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
@@ -43,6 +45,102 @@ function App() {
 
   // State to track which template is currently being hovered for the preview
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
+
+// THE PREMIUM ZIP EXPORT ENGINE
+  const handleExport = async () => {
+    const { personal, projects, education, skills, socials } = portfolioData;
+    
+    // Initialize the ZIP builder
+    const zip = new JSZip();
+
+    // 1. Generate the CSS File
+    const cssContent = `
+      body { background-color: #1e1e1e; color: #a6accd; font-family: monospace; padding: 2rem; margin: 0; line-height: 1.6; }
+      .container { max-width: 800px; margin: 0 auto; }
+      h1 { color: #82aaff; font-size: 2.5rem; margin-bottom: 0.5rem; }
+      h2 { color: #c792ea; font-size: 1.5rem; margin-top: 0; }
+      h3 { margin-top: 2rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+      .project, .edu { border-left: 2px solid #82aaff; padding-left: 1rem; margin-bottom: 1.5rem; }
+      .edu { border-left-color: #c792ea; }
+      .tag { background-color: #292d3e; color: #89ddff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem; margin-right: 0.5rem; display: inline-block; margin-bottom: 0.5rem; }
+      a { color: #82aaff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .contact-list { list-style-type: none; padding: 0; }
+      .contact-list span { color: #89ddff; }
+    `;
+
+    // 2. Generate the HTML File (Linking to the new CSS)
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${personal.name || 'Developer'} | Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>${personal.name || 'developer_name'}</h1>
+      <h2>> ${personal.role || 'sys.role'}</h2>
+    </header>
+
+    <section>
+      <h3>~/about_me</h3>
+      <p>${personal.bio || ''}</p>
+    </section>
+
+    <section>
+      <h3 style="color: #c3e88d;">~/projects</h3>
+      ${projects.map(p => `
+        <div class="project">
+          <h4 style="color: #ffcb6b; margin: 0 0 0.5rem 0;">${p.title}</h4>
+          <p style="margin: 0;">${p.description}</p>
+        </div>
+      `).join('')}
+    </section>
+
+    <section>
+      <h3 style="color: #f07178;">~/education</h3>
+      ${education.map(e => `
+        <div class="edu">
+          <h4 style="color: #89ddff; margin: 0 0 0.25rem 0;">${e.institution}</h4>
+          <p style="margin: 0;">${e.degree} <span style="color: #c3e88d;">[${e.score}]</span></p>
+        </div>
+      `).join('')}
+    </section>
+
+    <section>
+      <h3 style="color: #ffcb6b;">~/skills</h3>
+      <div>
+        ${skills.filter(s => s).map(s => `<span class="tag">${s}</span>`).join('')}
+      </div>
+    </section>
+
+    <section>
+      <h3 style="color: #f78c6c;">~/contact</h3>
+      <ul class="contact-list">
+        ${socials.email ? `<li><span>email: </span>${socials.email}</li>` : ''}
+        ${socials.github ? `<li><span>github: </span><a href="${socials.github}">${socials.github}</a></li>` : ''}
+        ${socials.linkedin ? `<li><span>linkedin: </span><a href="${socials.linkedin}">${socials.linkedin}</a></li>` : ''}
+      </ul>
+    </section>
+  </div>
+</body>
+</html>`;
+
+    // 3. Package the files into the ZIP
+    zip.file("index.html", htmlContent);
+    zip.file("style.css", cssContent);
+
+    // 4. Generate the ZIP and trigger the download
+    const blob = await zip.generateAsync({ type: "blob" });
+    
+    // Format the filename nicely (e.g., Akash_V_Portfolio.zip)
+    const fileName = personal.name ? `${personal.name.replace(/\s+/g, '_')}_Portfolio.zip` : 'Portfolio.zip';
+    
+    saveAs(blob, fileName);
+  };
 
   // Template choices based on your existing template data structure[cite: 5]
   const availableTemplates = [
@@ -251,6 +349,20 @@ function App() {
               })}
               style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             />
+          </div>
+
+          {/* EXPORT BUTTON */}
+          <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem' }}>
+            <button 
+              onClick={handleExport}
+              style={{ 
+                width: '100%', padding: '1rem', backgroundColor: '#10b981', color: 'white', 
+                border: 'none', borderRadius: '8px', fontSize: '1.2rem', fontWeight: 'bold', 
+                cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)' 
+              }}
+            >
+              🚀 Export My Portfolio (HTML)
+            </button>
           </div>
 
           {/* Template Selection Section with Hover Preview Trigger */}
