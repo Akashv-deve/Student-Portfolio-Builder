@@ -7,9 +7,9 @@ const Hero = () => {
       <div className="hero-container">
         {/* Left Side: Text Content */}
         <div className="hero-content">
-          <h1 className="hero-title">Build Your Professional Portfolio</h1>
+          <h1 className="hero-title">Build Your Professional Portfolio in Minutes</h1>
           <p className="hero-subtitle">
-            Stand out from the crowd. Create a stunning, responsive portfolio in minutes to showcase your skills, projects, and education to future employers.
+            The easiest way for students to build a powerful online presence. Create your profile, live-preview stunning responsive templates, and export your custom portfolio with just a few clicks.
           </p>
           <div className="hero-buttons">
             <button className="btn btn-primary">Get Started</button>
