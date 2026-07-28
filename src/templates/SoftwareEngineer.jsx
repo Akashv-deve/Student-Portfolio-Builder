@@ -27,6 +27,17 @@ const SoftwareEngineer = ({ data }) => {
           {data.personal.bio || "Waiting for bio input..."}
         </p>
       </div>
+      <div style={{ marginTop: '3rem' }}>
+        <h3 style={{ color: '#c3e88d', marginBottom: '1rem' }}>~/projects</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {data.projects && data.projects.map((project) => (
+            <div key={project.id} style={{ borderLeft: '2px solid #82aaff', paddingLeft: '1rem' }}>
+              <h4 style={{ color: '#ffcb6b', fontSize: '1.2rem', margin: '0 0 0.5rem 0' }}>{project.title}</h4>
+              <p style={{ margin: 0, color: '#a6accd', lineHeight: '1.5' }}>{project.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

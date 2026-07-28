@@ -74,6 +74,53 @@ function App() {
             />
           </div>
 
+          {/* Projects Section */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Projects</h3>
+            
+            {portfolioData.projects && portfolioData.projects.map((project, index) => (
+              <div key={project.id} style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#fff', borderRadius: '6px', border: '1px solid #ddd' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>Project Title</label>
+                <input 
+                  type="text" 
+                  value={project.title}
+                  onChange={(e) => {
+                    const updatedProjects = [...portfolioData.projects];
+                    updatedProjects[index].title = e.target.value;
+                    setPortfolioData({ ...portfolioData, projects: updatedProjects });
+                  }}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginBottom: '0.5rem' }}
+                />
+
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>Description</label>
+                <textarea 
+                  value={project.description}
+                  onChange={(e) => {
+                    const updatedProjects = [...portfolioData.projects];
+                    updatedProjects[index].description = e.target.value;
+                    setPortfolioData({ ...portfolioData, projects: updatedProjects });
+                  }}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', minHeight: '60px', resize: 'vertical' }}
+                />
+              </div>
+            ))}
+            
+            <button 
+              onClick={() => {
+                setPortfolioData({
+                  ...portfolioData,
+                  projects: [
+                    ...(portfolioData.projects || []), 
+                    { id: Date.now(), title: "New Project", description: "", techStack: [] }
+                  ]
+                })
+              }}
+              style={{ padding: '0.5rem 1rem', backgroundColor: '#1e293b', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 'bold' }}
+            >
+              + Add Another Project
+            </button>
+          </div>
+
           {/* Template Selection Section with Hover Preview Trigger */}
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Choose Template</label>
