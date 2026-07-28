@@ -7,6 +7,7 @@ import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Education from './components/Education';
 import Footer from './components/Footer';
+import SoftwareEngineer from './templates/SoftwareEngineer';
 
 function App() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
@@ -143,9 +144,16 @@ function App() {
             </span>
           </div>
 
-          <div style={{ padding: '2rem', border: '1px dashed #ccc', borderRadius: '8px', minHeight: '300px' }}>
-            <h1 style={{ fontSize: '2.5rem', margin: 0 }}>{portfolioData.personal.name || "Your Name Here"}</h1>
-            <p style={{ color: '#666', marginTop: '0.5rem' }}>Template Layout Active: {portfolioData.selectedTemplate}</p>
+          {/* DYNAMIC TEMPLATE RENDERING ENGINE */}
+          <div style={{ width: '100%', height: '100%' }}>
+            {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
+              <SoftwareEngineer data={portfolioData} />
+            ) : (
+              <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
+                <h3>Preview not available yet.</h3>
+                <p>We are still building the {portfolioData.selectedTemplate} template!</p>
+              </div>
+            )}
           </div>
         </div>
 
