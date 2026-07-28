@@ -15,7 +15,30 @@ function App() {
   // Master Portfolio State
   const [portfolioData, setPortfolioData] = useState({
     personal: { name: "", role: "", bio: "" },
-    selectedTemplate: "Software Engineer Portfolio"
+    selectedTemplate: "Software Engineer Portfolio",
+    projects: [
+      {
+        id: 1,
+        title: "Student Management System",
+        description: "A comprehensive system for tracking student data.",
+        techStack: ["React", "Node.js"]
+      }
+    ],
+    // ADD THIS NEW EDUCATION ARRAY
+    education: [
+      {
+        id: 1,
+        institution: "Government College of Engineering, Bodinayakanur",
+        degree: "B.E. Computer Science and Engineering",
+        score: "8.48 CGPA"
+      }
+    ],
+    skills: ["React", "Node.js", "Machine Learning", "Python", "SQL"],
+    socials: {
+      github: "https://github.com/Akashv-deve",
+      linkedin: "https://linkedin.com/in/yourprofile",
+      email: "hello@example.com"
+    }
   });
 
   // State to track which template is currently being hovered for the preview
@@ -119,6 +142,115 @@ function App() {
             >
               + Add Another Project
             </button>
+          </div>
+
+          {/* Education Section */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Education</h3>
+            
+            {portfolioData.education && portfolioData.education.map((edu, index) => (
+              <div key={edu.id} style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#fff', borderRadius: '6px', border: '1px solid #ddd' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>Institution</label>
+                <input 
+                  type="text" 
+                  value={edu.institution}
+                  onChange={(e) => {
+                    const updatedEdu = [...portfolioData.education];
+                    updatedEdu[index].institution = e.target.value;
+                    setPortfolioData({ ...portfolioData, education: updatedEdu });
+                  }}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginBottom: '0.5rem' }}
+                />
+
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div style={{ flex: 2 }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>Degree</label>
+                    <input 
+                      type="text" 
+                      value={edu.degree}
+                      onChange={(e) => {
+                        const updatedEdu = [...portfolioData.education];
+                        updatedEdu[index].degree = e.target.value;
+                        setPortfolioData({ ...portfolioData, education: updatedEdu });
+                      }}
+                      style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>Score/CGPA</label>
+                    <input 
+                      type="text" 
+                      value={edu.score}
+                      onChange={(e) => {
+                        const updatedEdu = [...portfolioData.education];
+                        updatedEdu[index].score = e.target.value;
+                        setPortfolioData({ ...portfolioData, education: updatedEdu });
+                      }}
+                      style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            <button 
+              onClick={() => {
+                setPortfolioData({
+                  ...portfolioData,
+                  education: [
+                    ...(portfolioData.education || []), 
+                    { id: Date.now(), institution: "New Institution", degree: "", score: "" }
+                  ]
+                })
+              }}
+              style={{ padding: '0.5rem 1rem', backgroundColor: '#1e293b', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 'bold' }}
+            >
+              + Add Education
+            </button>
+          </div>
+
+          {/* Skills Section */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Core Skills</h3>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>Comma Separated List</label>
+            <input 
+              type="text" 
+              value={(portfolioData.skills || []).join(', ')}
+              onChange={(e) => {
+                // Split the string by commas and remove extra spaces
+                const skillsArray = e.target.value.split(',').map(skill => skill.trim());
+                setPortfolioData({ ...portfolioData, skills: skillsArray });
+              }}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+              placeholder="e.g. React, Node.js, Python"
+            />
+          </div>
+
+          {/* Social Links Section */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Social Links</h3>
+            
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>GitHub URL</label>
+            <input 
+              type="text" 
+              value={portfolioData.socials?.github || ''}
+              onChange={(e) => setPortfolioData({
+                ...portfolioData, 
+                socials: { ...portfolioData.socials, github: e.target.value }
+              })}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginBottom: '0.5rem' }}
+            />
+
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600' }}>Email Address</label>
+            <input 
+              type="email" 
+              value={portfolioData.socials?.email || ''}
+              onChange={(e) => setPortfolioData({
+                ...portfolioData, 
+                socials: { ...portfolioData.socials, email: e.target.value }
+              })}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
           </div>
 
           {/* Template Selection Section with Hover Preview Trigger */}
