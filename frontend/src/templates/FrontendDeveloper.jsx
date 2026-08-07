@@ -5,17 +5,17 @@ const FrontendDeveloper = ({ data }) => {
 
   return (
     <div style={{
-      backgroundColor: '#0f172a', // Deep cinematic blue-black
+      backgroundColor: '#0f172a', 
       color: '#e2e8f0',
       fontFamily: "'Inter', system-ui, sans-serif",
-      minHeight: '100%',
-      padding: '3rem 2rem',
+      /* REMOVED minHeight: '100vh' so the layout strictly hugs the content! */
+      padding: '3rem 2rem 2rem 2rem',
       boxSizing: 'border-box'
     }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '800px', width: '100%', margin: '0 auto' }}>
         
-        {/* Hero Section with Cinematic Gradient Typography */}
-        <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        {/* Hero Section */}
+        <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h1 style={{
             fontSize: '3.5rem',
             fontWeight: '800',
@@ -38,9 +38,9 @@ const FrontendDeveloper = ({ data }) => {
           </p>
         </header>
 
-        {/* Skills - Floating Neon Pills */}
+        {/* Skills */}
         {skills && skills.length > 0 && (
-          <section style={{ marginBottom: '4rem' }}>
+          <section style={{ marginBottom: '3rem' }}>
             <h3 style={{ fontSize: '1.5rem', color: '#f8fafc', marginBottom: '1.5rem', textAlign: 'center', fontWeight: '700' }}>
               Core Technologies
             </h3>
@@ -63,17 +63,17 @@ const FrontendDeveloper = ({ data }) => {
           </section>
         )}
 
-        {/* Projects - Hover Cards */}
+        {/* Projects */}
         {projects && projects.length > 0 && (
-          <section style={{ marginBottom: '4rem' }}>
-            <h3 style={{ fontSize: '1.5rem', color: '#f8fafc', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem' }}>
+          <section style={{ marginBottom: '3rem' }}>
+            <h3 style={{ fontSize: '1.5rem', color: '#f8fafc', borderBottom: '1px solid #1e293b', paddingBottom: '0.75rem', marginBottom: '1.5rem' }}>
               Selected Works
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
               {projects.map((proj, idx) => (
                 <div key={idx} style={{
                   backgroundColor: '#1e293b',
-                  padding: '2rem',
+                  padding: '1.5rem',
                   borderRadius: '16px',
                   border: '1px solid #334155',
                   transition: 'all 0.3s ease'
@@ -88,7 +88,7 @@ const FrontendDeveloper = ({ data }) => {
                   e.currentTarget.style.borderColor = '#334155';
                   e.currentTarget.style.boxShadow = 'none';
                 }}>
-                  <h4 style={{ margin: '0 0 0.75rem 0', color: '#c084fc', fontSize: '1.3rem' }}>{proj.title}</h4>
+                  <h4 style={{ margin: '0 0 0.5rem 0', color: '#c084fc', fontSize: '1.3rem' }}>{proj.title}</h4>
                   <p style={{ margin: 0, color: '#94a3b8', lineHeight: '1.6', fontSize: '0.95rem' }}>{proj.description}</p>
                 </div>
               ))}
@@ -96,13 +96,13 @@ const FrontendDeveloper = ({ data }) => {
           </section>
         )}
 
-        {/* Education - Clean Timeline */}
+        {/* Education */}
         {education && education.length > 0 && (
-          <section style={{ marginBottom: '4rem' }}>
-            <h3 style={{ fontSize: '1.5rem', color: '#f8fafc', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem' }}>
+          <section style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.5rem', color: '#f8fafc', borderBottom: '1px solid #1e293b', paddingBottom: '0.75rem', marginBottom: '1.5rem' }}>
               Academic Background
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {education.map((edu, idx) => (
                 <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
@@ -117,9 +117,9 @@ const FrontendDeveloper = ({ data }) => {
             </div>
           </section>
         )}
-
-        {/* Contact Footer */}
-        <footer style={{ textAlign: 'center', marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #1e293b' }}>
+        
+        {/* Footer */}
+        <footer style={{ textAlign: 'center', marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid #1e293b' }}>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
             {socials?.email && (
               <a href={`mailto:${socials.email}`} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = '#38bdf8'} onMouseOut={e => e.target.style.color = '#94a3b8'}>Email</a>

@@ -18,6 +18,11 @@ const PortfolioSchema = new mongoose.Schema({
     degree: String,
     score: String // Changed from 'cgpa' to 'score' to match frontend
   }],
+  // Add this line inside your mongoose.Schema({ ... })
+  template: { 
+    type: String, 
+    default: "Software Engineer Portfolio" 
+  },
   // NEW FIELDS ADDED HERE:
   skills: { type: [String], default: [] },
   socials: {

@@ -114,6 +114,7 @@ const handlePublish = async () => {
       // Always send the slug in the body so the backend knows whether to update or create new
       const payload = {
         slug: portfolioData.slug || '',
+        template: portfolioData.selectedTemplate || "Software Engineer Portfolio",
         personalInfo: {
           fullName: portfolioData.personal.name,
           role: portfolioData.personal.role,

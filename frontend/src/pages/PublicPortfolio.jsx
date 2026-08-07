@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import SoftwareEngineer from '../templates/SoftwareEngineer';
+import FrontendDeveloper from '../templates/FrontendDeveloper';
 
 const PublicPortfolio = () => {
-  // 1. Grab the custom slug from the URL (e.g., 'akash-v')
   const { slug } = useParams(); 
   
   const [portfolioData, setPortfolioData] = useState(null);
@@ -11,7 +11,6 @@ const PublicPortfolio = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // 2. Fetch the data from your backend when the page loads
     const fetchPortfolio = async () => {
       try {
         const response = await fetch(`http://localhost:5000/api/portfolio/${slug}`);
@@ -22,7 +21,7 @@ const PublicPortfolio = () => {
 
         const dbData = await response.json();
 
-        // 3. Map the database structure back to what the template expects
+        // 👇 WE JUST ADD THE TEMPLATE LINE TO YOUR EXISTING mappedData OBJECT
         const mappedData = {
           personal: {
             name: dbData.personalInfo?.fullName || '',
@@ -36,7 +35,8 @@ const PublicPortfolio = () => {
             github: dbData.socials.github || '',
             linkedin: dbData.socials.linkedin || '',
             email: dbData.socials.email || ''
-          } : {}
+          } : {},
+          template: dbData.template || "Software Engineer Portfolio" // 👈 Added this line!
         };
 
         setPortfolioData(mappedData);
@@ -50,7 +50,6 @@ const PublicPortfolio = () => {
     fetchPortfolio();
   }, [slug]);
 
-  // 4. Handle Loading and Error states gracefully
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#1e1e1e', color: '#fff' }}>
@@ -67,11 +66,15 @@ const PublicPortfolio = () => {
     );
   }
 
-  // 5. Render the template fullscreen!
+  // 👇 UPDATE THIS TO USE YOUR portfolioData STATE
   return (
-    <div style={{ height: '100vh', width: '100vw', overflowY: 'auto', backgroundColor: '#1e1e1e' }}>
-      <SoftwareEngineer data={portfolioData} />
-    </div>
+    <>
+      {portfolioData.template === "Frontend Developer Portfolio" ? (
+        <FrontendDeveloper data={portfolioData} />
+      ) : (
+        <SoftwareEngineer data={portfolioData} />
+      )}
+    </>
   );
 };
 

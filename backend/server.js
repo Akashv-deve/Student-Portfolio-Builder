@@ -36,7 +36,7 @@ const generateUniqueSlug = async (fullName) => {
 // --- API ROUTES ---
 
 const normalizePortfolioPayload = (body = {}) => {
-  const { personalInfo, projects, education, skills, socials } = body;
+  const { personalInfo, projects, education, skills, socials, template } = body;
   const safePersonalInfo = {
     fullName: personalInfo?.fullName || '',
     role: personalInfo?.role || '',
@@ -52,7 +52,8 @@ const normalizePortfolioPayload = (body = {}) => {
       github: socials.github || '',
       linkedin: socials.linkedin || '',
       email: socials.email || ''
-    } : { github: '', linkedin: '', email: '' }
+    } : { github: '', linkedin: '', email: '' },
+    template: template || "Software Engineer Portfolio"
   };
 };
 
