@@ -19,11 +19,14 @@ const PortfolioSchema = new mongoose.Schema({
     score: String // Changed from 'cgpa' to 'score' to match frontend
   }],
   // NEW FIELDS ADDED HERE:
-  skills: [String],
+  skills: { type: [String], default: [] },
   socials: {
-    github: String,
-    linkedin: String,
-    email: String
+    type: {
+      github: { type: String, default: '' },
+      linkedin: { type: String, default: '' },
+      email: { type: String, default: '' }
+    },
+    default: {}
   }
 }, { timestamps: true });
 

@@ -2,6 +2,14 @@
 import React from 'react';
 
 const SoftwareEngineer = ({ data }) => {
+  const skills = Array.isArray(data?.skills)
+    ? data.skills.filter(Boolean)
+    : [];
+
+  const socials = data?.socials && typeof data.socials === 'object'
+    ? data.socials
+    : {};
+
   return (
     <div style={{ 
       backgroundColor: '#1e1e1e', 
@@ -57,13 +65,10 @@ const SoftwareEngineer = ({ data }) => {
       <div style={{ marginTop: '3rem' }}>
         <h3 style={{ color: '#ffcb6b', marginBottom: '1rem' }}>~/skills</h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          {data.skills && data.skills.map((skill, index) => (
-            // Only render if the skill isn't an empty string
-            skill && (
-              <span key={index} style={{ backgroundColor: '#292d3e', color: '#89ddff', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.9rem', border: '1px solid #444' }}>
-                {skill}
-              </span>
-            )
+          {skills.map((skill, index) => (
+            <span key={index} style={{ backgroundColor: '#292d3e', color: '#89ddff', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.9rem', border: '1px solid #444' }}>
+              {skill}
+            </span>
           ))}
         </div>
       </div>
@@ -72,9 +77,9 @@ const SoftwareEngineer = ({ data }) => {
       <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px dashed #333' }}>
         <h3 style={{ color: '#f78c6c', marginBottom: '1rem' }}>~/contact</h3>
         <ul style={{ listStyleType: 'none', padding: 0, margin: 0, color: '#a6accd', lineHeight: '1.8', fontSize: '1.1rem' }}>
-          {data.socials?.email && <li><span style={{ color: '#89ddff', marginRight: '10px' }}>email:</span>{data.socials.email}</li>}
-          {data.socials?.github && <li><span style={{ color: '#89ddff', marginRight: '10px' }}>github:</span><a href={data.socials.github} target="_blank" rel="noreferrer" style={{ color: '#82aaff', textDecoration: 'none' }}>{data.socials.github}</a></li>}
-          {data.socials?.linkedin && <li><span style={{ color: '#89ddff', marginRight: '10px' }}>linkedin:</span><a href={data.socials.linkedin} target="_blank" rel="noreferrer" style={{ color: '#82aaff', textDecoration: 'none' }}>{data.socials.linkedin}</a></li>}
+          {socials.email && <li><span style={{ color: '#89ddff', marginRight: '10px' }}>email:</span>{socials.email}</li>}
+          {socials.github && <li><span style={{ color: '#89ddff', marginRight: '10px' }}>github:</span><a href={socials.github} target="_blank" rel="noreferrer" style={{ color: '#82aaff', textDecoration: 'none' }}>{socials.github}</a></li>}
+          {socials.linkedin && <li><span style={{ color: '#89ddff', marginRight: '10px' }}>linkedin:</span><a href={socials.linkedin} target="_blank" rel="noreferrer" style={{ color: '#82aaff', textDecoration: 'none' }}>{socials.linkedin}</a></li>}
         </ul>
       </div>
     </div>

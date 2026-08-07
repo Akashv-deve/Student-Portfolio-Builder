@@ -4,7 +4,8 @@ import { saveAs } from 'file-saver';
 import SoftwareEngineer from '../templates/SoftwareEngineer';
 import { useNavigate } from 'react-router-dom';
 
-const Dashboard = ({ portfolioData, setPortfolioData, setIsBuilderOpen }) => {
+const Dashboard = ({ portfolioData, setPortfolioData}) => {
+  const navigate = useNavigate();
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
 
   // THE PREMIUM ZIP EXPORT ENGINE (Fixed string formatting)
@@ -90,49 +91,68 @@ const Dashboard = ({ portfolioData, setPortfolioData, setIsBuilderOpen }) => {
 
   // Add this function right below your handleExport function
 const handlePublish = async () => {
-  // Simple validation
-  if (!portfolioData.personal.name) {
-    alert("Please enter your Full Name before publishing!");
-    return;
-  }
+    console.log("Current Slug in State:", portfolioData.slug);
 
-  try {
-    // We map your frontend state to match our MongoDB schema exactly
-    c// 1. Updated payload to include ALL data
+    if (!portfolioData.personal.name) {
+      alert("Please enter your Full Name before publishing!");
+      return;
+    }
+
+    try {
+      const normalizedSkills = Array.isArray(portfolioData.skills)
+        ? portfolioData.skills.filter(Boolean)
+        : [];
+      const normalizedSocials = {
+        github: portfolioData.socials?.github || '',
+        linkedin: portfolioData.socials?.linkedin || '',
+        email: portfolioData.socials?.email || ''
+      };
+
+      // Always send the slug in the body so the backend knows whether to update or create new
       const payload = {
+        slug: portfolioData.slug || '',
         personalInfo: {
           fullName: portfolioData.personal.name,
           role: portfolioData.personal.role,
           bio: portfolioData.personal.bio,
         },
-        projects: portfolioData.projects,
-        education: portfolioData.education,
-        skills: portfolioData.skills,   // 👈 Added this
-        socials: portfolioData.socials  // 👈 Added this
+        projects: Array.isArray(portfolioData.projects) ? portfolioData.projects : [],
+        education: Array.isArray(portfolioData.education) ? portfolioData.education : [],
+        skills: normalizedSkills,
+        socials: normalizedSocials
       };
 
-    const response = await fetch('http://localhost:5000/api/portfolio', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+      // Always POST to the main endpoint; the backend handles the rest!
+      const response = await fetch('http://localhost:5000/api/portfolio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await response.json();
+      let data = null;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error('Failed to parse publish response:', parseError);
+        data = { message: 'Invalid server response.' };
+      }
 
-    if (response.ok) {
-      // Success!
-      alert(`🎉 Portfolio published successfully!\n\nYour Live URL: ${data.url}`);
-      console.log("Saved Data:", data);
-    } else {
-      alert(`Error: ${data.message}`);
+      if (response.ok) {
+        const nextSlug = data?.slug || portfolioData.slug || '';
+        setPortfolioData({ ...portfolioData, slug: nextSlug });
+        alert(`🎉 Portfolio saved successfully!\n\nYour Live URL: ${data?.url || 'N/A'}`);
+        console.log('Saved Data:', data);
+      } else {
+        console.error('Publish failed with server response:', data);
+        alert(`Error: ${data?.message || 'Unknown error while publishing.'}`);
+      }
+    } catch (error) {
+      console.error("Publishing error:", error);
+      alert("Failed to publish. Check your console, bro.");
     }
-  } catch (error) {
-    console.error("Publishing error:", error);
-    alert("Failed to publish. Check your console, bro.");
-  }
-};
+  };
 
   const availableTemplates = [
     {

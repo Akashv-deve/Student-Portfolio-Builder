@@ -25,14 +25,18 @@ const PublicPortfolio = () => {
         // 3. Map the database structure back to what the template expects
         const mappedData = {
           personal: {
-            name: dbData.personalInfo.fullName,
-            role: dbData.personalInfo.role,
-            bio: dbData.personalInfo.bio,
+            name: dbData.personalInfo?.fullName || '',
+            role: dbData.personalInfo?.role || '',
+            bio: dbData.personalInfo?.bio || '',
           },
-          projects: dbData.projects || [],
-          education: dbData.education || [],
-          skills: dbData.skills || [],
-          socials: dbData.socials || {}
+          projects: Array.isArray(dbData.projects) ? dbData.projects : [],
+          education: Array.isArray(dbData.education) ? dbData.education : [],
+          skills: Array.isArray(dbData.skills) ? dbData.skills.filter(Boolean) : [],
+          socials: dbData.socials && typeof dbData.socials === 'object' ? {
+            github: dbData.socials.github || '',
+            linkedin: dbData.socials.linkedin || '',
+            email: dbData.socials.email || ''
+          } : {}
         };
 
         setPortfolioData(mappedData);
