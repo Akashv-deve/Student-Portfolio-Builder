@@ -98,15 +98,18 @@ const handlePublish = async () => {
 
   try {
     // We map your frontend state to match our MongoDB schema exactly
-    const payload = {
-      personalInfo: {
-        fullName: portfolioData.personal.name,
-        role: portfolioData.personal.role,
-        bio: portfolioData.personal.bio,
-      },
-      projects: portfolioData.projects,
-      education: portfolioData.education
-    };
+    c// 1. Updated payload to include ALL data
+      const payload = {
+        personalInfo: {
+          fullName: portfolioData.personal.name,
+          role: portfolioData.personal.role,
+          bio: portfolioData.personal.bio,
+        },
+        projects: portfolioData.projects,
+        education: portfolioData.education,
+        skills: portfolioData.skills,   // 👈 Added this
+        socials: portfolioData.socials  // 👈 Added this
+      };
 
     const response = await fetch('http://localhost:5000/api/portfolio', {
       method: 'POST',

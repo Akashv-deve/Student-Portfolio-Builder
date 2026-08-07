@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
 
 const PortfolioSchema = new mongoose.Schema({
-  // The unique URL slug
   userSlug: { type: String, required: true, unique: true }, 
   
-  // The data from your builder
   personalInfo: {
     fullName: String,
     role: String,
@@ -13,12 +11,20 @@ const PortfolioSchema = new mongoose.Schema({
   projects: [{
     title: String,
     description: String,
+    techStack: [String] // Added this just in case!
   }],
   education: [{
     institution: String,
     degree: String,
-    cgpa: String
-  }]
+    score: String // Changed from 'cgpa' to 'score' to match frontend
+  }],
+  // NEW FIELDS ADDED HERE:
+  skills: [String],
+  socials: {
+    github: String,
+    linkedin: String,
+    email: String
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Portfolio', PortfolioSchema);
