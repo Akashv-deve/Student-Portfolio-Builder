@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = ({ portfolioData, setPortfolioData}) => {
   const navigate = useNavigate();
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
+  // 👈 ADD THIS LINE: Controls the success popup visibility and URL
+  const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
 
   // THE PREMIUM ZIP EXPORT ENGINE (Fixed string formatting)
   const handleExport = async () => {
@@ -142,7 +144,8 @@ const handlePublish = async () => {
       if (response.ok) {
         const nextSlug = data?.slug || portfolioData.slug || '';
         setPortfolioData({ ...portfolioData, slug: nextSlug });
-        alert(`🎉 Portfolio saved successfully!\n\nYour Live URL: ${data?.url || 'N/A'}`);
+        // 👈 SWAP THE ALERT FOR THIS:
+        setPublishModal({ isOpen: true, url: data?.url || 'N/A' });
         console.log('Saved Data:', data);
       } else {
         console.error('Publish failed with server response:', data);
@@ -466,6 +469,71 @@ const handlePublish = async () => {
           )}
         </div>
       </div>
+      {/* 🚀 PREMIUM SUCCESS MODAL OVERLAY */}
+      {publishModal.isOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+          backdropFilter: 'blur(4px)',
+          display: 'flex', justifyContent: 'center', alignItems: 'center', 
+          zIndex: 9999
+        }}>
+          <div style={{
+            backgroundColor: '#ffffff', padding: '2.5rem', borderRadius: '12px',
+            maxWidth: '450px', width: '90%', textAlign: 'center',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            transform: 'translateY(0)', animation: 'slideUp 0.3s ease-out'
+          }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
+            <h2 style={{ margin: '0 0 0.5rem 0', color: '#10b981', fontSize: '1.8rem' }}>Published Successfully!</h2>
+            <p style={{ margin: '0 0 1.5rem 0', color: '#64748b', fontSize: '1rem' }}>
+              Your portfolio is live and ready to share with the world.
+            </p>
+            
+            <div style={{ 
+              backgroundColor: '#f1f5f9', padding: '1rem', borderRadius: '8px', 
+              marginBottom: '1.5rem', border: '1px solid #e2e8f0', wordBreak: 'break-all'
+            }}>
+              <a href={publishModal.url} target="_blank" rel="noreferrer" style={{
+                color: '#3b82f6', fontWeight: 'bold', fontSize: '1.1rem', textDecoration: 'none'
+              }}>
+                {publishModal.url}
+              </a>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(publishModal.url);
+                  // Optional: You can change the button text temporarily here if you want to get fancy!
+                }}
+                style={{
+                  flex: 1, padding: '0.75rem', backgroundColor: '#f8fafc', color: '#0f172a',
+                  border: '2px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', 
+                  fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#e2e8f0'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#f8fafc'}
+              >
+                📋 Copy Link
+              </button>
+              
+              <button
+                onClick={() => setPublishModal({ isOpen: false, url: '' })}
+                style={{
+                  flex: 1, padding: '0.75rem', backgroundColor: '#0f172a', color: '#ffffff',
+                  border: 'none', borderRadius: '8px', cursor: 'pointer', 
+                  fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#334155'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#0f172a'}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
