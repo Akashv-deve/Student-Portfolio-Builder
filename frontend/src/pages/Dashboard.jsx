@@ -87,6 +87,49 @@ const Dashboard = ({ portfolioData, setPortfolioData, setIsBuilderOpen }) => {
     saveAs(blob, fileName);
   };
 
+  // Add this function right below your handleExport function
+const handlePublish = async () => {
+  // Simple validation
+  if (!portfolioData.personal.name) {
+    alert("Please enter your Full Name before publishing!");
+    return;
+  }
+
+  try {
+    // We map your frontend state to match our MongoDB schema exactly
+    const payload = {
+      personalInfo: {
+        fullName: portfolioData.personal.name,
+        role: portfolioData.personal.role,
+        bio: portfolioData.personal.bio,
+      },
+      projects: portfolioData.projects,
+      education: portfolioData.education
+    };
+
+    const response = await fetch('http://localhost:5000/api/portfolio', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Success!
+      alert(`🎉 Portfolio published successfully!\n\nYour Live URL: ${data.url}`);
+      console.log("Saved Data:", data);
+    } else {
+      alert(`Error: ${data.message}`);
+    }
+  } catch (error) {
+    console.error("Publishing error:", error);
+    alert("Failed to publish. Check your console, bro.");
+  }
+};
+
   const availableTemplates = [
     {
       title: "Software Engineer Portfolio",
@@ -292,17 +335,29 @@ const Dashboard = ({ portfolioData, setPortfolioData, setIsBuilderOpen }) => {
           />
         </div>
 
-        {/* EXPORT BUTTON */}
-        <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem', marginBottom: '2rem' }}>
+        {/* EXPORT & PUBLISH BUTTONS */}
+        <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem', marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
           <button 
             onClick={handleExport}
             style={{ 
-              width: '100%', padding: '1rem', backgroundColor: '#10b981', color: 'white', 
-              border: 'none', borderRadius: '8px', fontSize: '1.2rem', fontWeight: 'bold', 
-              cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)' 
+              flex: 1, padding: '1rem', backgroundColor: '#1e293b', color: 'white', 
+              border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', 
+              cursor: 'pointer', transition: 'all 0.2s ease'
             }}
           >
-            🚀 Export My Portfolio (HTML)
+            💾 Export HTML/CSS
+          </button>
+
+          <button 
+            onClick={handlePublish}
+            style={{ 
+              flex: 1, padding: '1rem', backgroundColor: '#10b981', color: 'white', 
+              border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', 
+              cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            🚀 Publish to Web
           </button>
         </div>
 
