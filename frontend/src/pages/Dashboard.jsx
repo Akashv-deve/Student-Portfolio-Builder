@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import SoftwareEngineer from '../templates/SoftwareEngineer';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = ({ portfolioData, setPortfolioData, setIsBuilderOpen }) => {
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
@@ -157,10 +158,10 @@ const handlePublish = async () => {
       {/* LEFT PANE: Builder Controls */}
       <div style={{ flex: 1, padding: '2rem', backgroundColor: '#f4f4f5', overflowY: 'auto', position: 'relative' }}>
         <button 
-          onClick={() => setIsBuilderOpen(false)}
-          style={{ marginBottom: '1.5rem', padding: '0.5rem 1rem', cursor: 'pointer', borderRadius: '4px', border: '1px solid #ccc' }}
+           onClick={() => navigate('/')}
+           style={{ marginBottom: '1.5rem', padding: '0.5rem 1rem', cursor: 'pointer', borderRadius: '4px', border: '1px solid #ccc' }}
         >
-          ← Back to Home
+        ← Back to Home
         </button>
         
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#000' }}>Builder Controls</h2>
