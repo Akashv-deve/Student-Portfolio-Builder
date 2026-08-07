@@ -5,14 +5,13 @@ import SoftwareEngineer from '../templates/SoftwareEngineer';
 import { useNavigate } from 'react-router-dom';
 import FrontendDeveloper from '../templates/FrontendDeveloper';
 import UIUXDesigner from '../templates/UIUXDesigner';
+import BuilderForm from '../components/BuilderForm';
 
 const Dashboard = ({ portfolioData, setPortfolioData}) => {
   const navigate = useNavigate();
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
-  // 👈 ADD THIS LINE: Controls the success popup visibility and URL
   const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
 
-  // THE PREMIUM ZIP EXPORT ENGINE (Fixed string formatting)
   const handleExport = async () => {
     const { personal, projects, education, skills, socials } = portfolioData;
     const zip = new JSZip();
@@ -93,8 +92,7 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
     saveAs(blob, fileName);
   };
 
-  // Add this function right below your handleExport function
-const handlePublish = async () => {
+  const handlePublish = async () => {
     console.log("Current Slug in State:", portfolioData.slug);
 
     if (!portfolioData.personal.name) {
@@ -112,7 +110,6 @@ const handlePublish = async () => {
         email: portfolioData.socials?.email || ''
       };
 
-      // Always send the slug in the body so the backend knows whether to update or create new
       const payload = {
         slug: portfolioData.slug || '',
         template: portfolioData.selectedTemplate || "Software Engineer Portfolio",
@@ -127,7 +124,6 @@ const handlePublish = async () => {
         socials: normalizedSocials
       };
 
-      // Always POST to the main endpoint; the backend handles the rest!
       const response = await fetch('http://localhost:5000/api/portfolio', {
         method: 'POST',
         headers: {
@@ -147,7 +143,6 @@ const handlePublish = async () => {
       if (response.ok) {
         const nextSlug = data?.slug || portfolioData.slug || '';
         setPortfolioData({ ...portfolioData, slug: nextSlug });
-        // 👈 SWAP THE ALERT FOR THIS:
         setPublishModal({ isOpen: true, url: data?.url || 'N/A' });
         console.log('Saved Data:', data);
       } else {
@@ -193,177 +188,10 @@ const handlePublish = async () => {
         ← Back to Home
         </button>
         
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#000' }}>Builder Controls</h2>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#000' }}>Builder Controls</h2>
         
-        {/* Personal Info Section */}
-        <div style={{ marginBottom: '2rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#000' }}>Full Name</label>
-          <input 
-            type="text" 
-            placeholder="Enter your name"
-            value={portfolioData.personal.name}
-            onChange={(e) => setPortfolioData({
-              ...portfolioData, 
-              personal: { ...portfolioData.personal, name: e.target.value }
-            })}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-          />
-        </div>
-
-        {/* Projects Section */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#000' }}>Projects</h3>
-          
-          {portfolioData.projects && portfolioData.projects.map((project, index) => (
-            <div key={project.id} style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#fff', borderRadius: '6px', border: '1px solid #ddd' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>Project Title</label>
-              <input 
-                type="text" 
-                value={project.title}
-                onChange={(e) => {
-                  const updatedProjects = [...portfolioData.projects];
-                  updatedProjects[index].title = e.target.value;
-                  setPortfolioData({ ...portfolioData, projects: updatedProjects });
-                }}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginBottom: '0.5rem', boxSizing: 'border-box' }}
-              />
-
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>Description</label>
-              <textarea 
-                value={project.description}
-                onChange={(e) => {
-                  const updatedProjects = [...portfolioData.projects];
-                  updatedProjects[index].description = e.target.value;
-                  setPortfolioData({ ...portfolioData, projects: updatedProjects });
-                }}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', minHeight: '60px', resize: 'vertical', boxSizing: 'border-box' }}
-              />
-            </div>
-          ))}
-          
-          <button 
-            onClick={() => {
-              setPortfolioData({
-                ...portfolioData,
-                projects: [
-                  ...(portfolioData.projects || []), 
-                  { id: Date.now(), title: "New Project", description: "", techStack: [] }
-                ]
-              })
-            }}
-            style={{ padding: '0.5rem 1rem', backgroundColor: '#1e293b', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 'bold' }}
-          >
-            + Add Another Project
-          </button>
-        </div>
-
-        {/* Education Section */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#000' }}>Education</h3>
-          
-          {portfolioData.education && portfolioData.education.map((edu, index) => (
-            <div key={edu.id} style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#fff', borderRadius: '6px', border: '1px solid #ddd' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>Institution</label>
-              <input 
-                type="text" 
-                value={edu.institution}
-                onChange={(e) => {
-                  const updatedEdu = [...portfolioData.education];
-                  updatedEdu[index].institution = e.target.value;
-                  setPortfolioData({ ...portfolioData, education: updatedEdu });
-                }}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginBottom: '0.5rem', boxSizing: 'border-box' }}
-              />
-
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <div style={{ flex: 2 }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>Degree</label>
-                  <input 
-                    type="text" 
-                    value={edu.degree}
-                    onChange={(e) => {
-                      const updatedEdu = [...portfolioData.education];
-                      updatedEdu[index].degree = e.target.value;
-                      setPortfolioData({ ...portfolioData, education: updatedEdu });
-                    }}
-                    style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>Score/CGPA</label>
-                  <input 
-                    type="text" 
-                    value={edu.score}
-                    onChange={(e) => {
-                      const updatedEdu = [...portfolioData.education];
-                      updatedEdu[index].score = e.target.value;
-                      setPortfolioData({ ...portfolioData, education: updatedEdu });
-                    }}
-                    style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-          
-          <button 
-            onClick={() => {
-              setPortfolioData({
-                ...portfolioData,
-                education: [
-                  ...(portfolioData.education || []), 
-                  { id: Date.now(), institution: "New Institution", degree: "", score: "" }
-                ]
-              })
-            }}
-            style={{ padding: '0.5rem 1rem', backgroundColor: '#1e293b', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%', fontWeight: 'bold' }}
-          >
-            + Add Education
-          </button>
-        </div>
-
-        {/* Skills Section */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#000' }}>Core Skills</h3>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>Comma Separated List</label>
-          <input 
-            type="text" 
-            value={(portfolioData.skills || []).join(', ')}
-            onChange={(e) => {
-              const skillsArray = e.target.value.split(',').map(skill => skill.trim());
-              setPortfolioData({ ...portfolioData, skills: skillsArray });
-            }}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-            placeholder="e.g. React, Node.js, Python"
-          />
-        </div>
-
-        {/* Social Links Section */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#000' }}>Social Links</h3>
-          
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>GitHub URL</label>
-          <input 
-            type="text" 
-            value={portfolioData.socials?.github || ''}
-            onChange={(e) => setPortfolioData({
-              ...portfolioData, 
-              socials: { ...portfolioData.socials, github: e.target.value }
-            })}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginBottom: '0.5rem', boxSizing: 'border-box' }}
-          />
-
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#000' }}>Email Address</label>
-          <input 
-            type="email" 
-            value={portfolioData.socials?.email || ''}
-            onChange={(e) => setPortfolioData({
-              ...portfolioData, 
-              socials: { ...portfolioData.socials, email: e.target.value }
-            })}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-          />
-        </div>
+        {/* INJECTED MODULAR FORM COMPONENT */}
+        <BuilderForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} />
 
         {/* EXPORT & PUBLISH BUTTONS */}
         <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem', marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
@@ -512,7 +340,6 @@ const handlePublish = async () => {
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(publishModal.url);
-                  // Optional: You can change the button text temporarily here if you want to get fancy!
                 }}
                 style={{
                   flex: 1, padding: '0.75rem', backgroundColor: '#f8fafc', color: '#0f172a',
