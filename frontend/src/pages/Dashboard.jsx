@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import SoftwareEngineer from '../templates/SoftwareEngineer';
 import { useNavigate } from 'react-router-dom';
 import FrontendDeveloper from '../templates/FrontendDeveloper';
+import UIUXDesigner from '../templates/UIUXDesigner';
 
 const Dashboard = ({ portfolioData, setPortfolioData}) => {
   const navigate = useNavigate();
@@ -464,7 +465,9 @@ const handlePublish = async () => {
           {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
             <SoftwareEngineer data={portfolioData} />
           ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
-            <FrontendDeveloper data={portfolioData} /> // 👈 New template mapped here!
+            <FrontendDeveloper data={portfolioData} />
+          ) : portfolioData.selectedTemplate === "UI/UX Designer Portfolio" ? (
+            <UIUXDesigner portfolioData={portfolioData} />
           ) : (
             <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
               <h3>Preview not available yet.</h3>

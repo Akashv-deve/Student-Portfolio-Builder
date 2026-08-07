@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import SoftwareEngineer from '../templates/SoftwareEngineer';
 import FrontendDeveloper from '../templates/FrontendDeveloper';
+import UIUXDesigner from '../templates/UIUXDesigner';
 
 const PublicPortfolio = () => {
   const { slug } = useParams(); 
@@ -71,6 +72,8 @@ const PublicPortfolio = () => {
     <>
       {portfolioData.template === "Frontend Developer Portfolio" ? (
         <FrontendDeveloper data={portfolioData} />
+        ) : portfolioData.template === "UI/UX Designer Portfolio" ? (
+        <UIUXDesigner portfolioData={portfolioData} />
       ) : (
         <SoftwareEngineer data={portfolioData} />
       )}
