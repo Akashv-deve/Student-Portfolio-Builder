@@ -85,10 +85,9 @@ export default function UIUXDesigner({ data, portfolioData }) {
           <span style={{ color: colors.muted, fontSize: '0.9rem' }}>{new Date().getFullYear()}</span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           {safeProjects.map((project, index) => {
             const isHovered = hoveredProject === project.id;
-            const isEven = index % 2 === 0;
 
             return (
               <div 
@@ -97,50 +96,33 @@ export default function UIUXDesigner({ data, portfolioData }) {
                 onMouseLeave={() => setHoveredProject(null)}
                 style={{ 
                   display: 'flex', 
-                  flexDirection: isEven ? 'row' : 'row-reverse', 
-                  gap: '4vw',
-                  alignItems: 'center',
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
+                  gap: '2vw',
+                  padding: '4rem 0',
+                  borderTop: index !== 0 ? `1px solid ${colors.border}` : 'none',
+                  transition: 'opacity 0.4s ease',
+                  opacity: hoveredProject === null || isHovered ? 1 : 0.3
                 }}
               >
-                {/* Image Container - Strict no-overlay placement */}
-                <div style={{ 
-                  flex: '1 1 500px', 
-                  backgroundColor: '#e5e5e5', 
-                  aspectRatio: '4/3', 
-                  overflow: 'hidden',
-                  position: 'relative'
-                }}>
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: '#d4d4d4',
-                    transform: isHovered ? 'scale(1.03)' : 'scale(1)',
-                    transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: colors.muted
-                  }}>
-                    <span style={{ letterSpacing: '0.1em', fontSize: '0.85rem', textTransform: 'uppercase' }}>Visual Asset</span>
-                  </div>
-                </div>
-
-                {/* Project Typography */}
-                <div style={{ flex: '1 1 300px', padding: '2rem 0' }}>
-                  <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.muted, display: 'block', marginBottom: '1rem' }}>
+                {/* Meta Data Column */}
+                <div style={{ flex: '1 1 200px' }}>
+                  <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.muted, display: 'block', paddingTop: '0.5rem' }}>
                     0{index + 1} — {project.category || 'Case Study'}
                   </span>
+                </div>
+
+                {/* Project Typography Column */}
+                <div style={{ flex: '2 1 500px' }}>
                   <h3 style={{ 
                     fontFamily: fonts.serif, 
                     fontSize: 'clamp(2rem, 4vw, 3.5rem)', 
-                    margin: '0 0 1.5rem 0', 
+                    margin: '0 0 1rem 0', 
                     fontWeight: '400',
                     lineHeight: '1.1'
                   }}>
                     {project.title}
                   </h3>
-                  <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: colors.muted, margin: 0, maxWidth: '400px' }}>
+                  <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: colors.muted, margin: 0, maxWidth: '600px' }}>
                     {project.description}
                   </p>
                 </div>
