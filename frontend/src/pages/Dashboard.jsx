@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import SoftwareEngineer from '../templates/SoftwareEngineer';
 import { useNavigate } from 'react-router-dom';
+import FrontendDeveloper from '../templates/FrontendDeveloper';
 
 const Dashboard = ({ portfolioData, setPortfolioData}) => {
   const navigate = useNavigate();
@@ -461,6 +462,8 @@ const handlePublish = async () => {
         <div style={{ width: '100%', height: '100%' }}>
           {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
             <SoftwareEngineer data={portfolioData} />
+          ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
+            <FrontendDeveloper data={portfolioData} /> // 👈 New template mapped here!
           ) : (
             <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
               <h3>Preview not available yet.</h3>
