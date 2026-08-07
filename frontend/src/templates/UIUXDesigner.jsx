@@ -1,67 +1,209 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const UIUXDesigner = ({ portfolioData }) => {
-  // Destructure with fallbacks for the live builder preview
+export default function UIUXDesigner({ data, portfolioData }) {
+  // Catch both prop names so it never breaks!
+  const activeData = data || portfolioData || {};
+
   const {
-    name = "First Last",
-    role = "UI / UX Designer",
-    about = "I craft digital experiences focused on ultra-minimalism, massive typography, and intuitive functionality.",
-    projects = [
-      { id: 1, title: "Project One", category: "Mobile App", imageUrl: "https://placehold.co/1200x800/eeeeee/999999?text=Visual+Placeholder" },
-      { id: 2, title: "Project Two", category: "Web Platform", imageUrl: "https://placehold.co/1200x800/eeeeee/999999?text=Visual+Placeholder" }
-    ],
-    contactEmail = "hello@example.com"
-  } = portfolioData || {};
+    personal = {},
+    projects = [],
+    education = [],
+    skills = [],
+    socials = {},
+  } = activeData;
+
+  const [hoveredProject, setHoveredProject] = useState(null);
+
+  const name = personal.name || 'Your Name';
+  const role = personal.role || 'Digital Designer';
+  const bio = personal.bio || 'Crafting cinematic digital experiences and timeless interfaces with a focus on pristine typography and visual hierarchy.';
+
+  const safeProjects = projects.length
+    ? projects
+    : [
+        { id: 'p1', title: 'Editorial Redesign', description: 'A complete overhaul of a digital publication, focusing on whitespace and legibility.', category: 'Web Design' },
+        { id: 'p2', title: 'Fintech Mobile App', description: 'Simplifying complex financial data into an intuitive, human-centered interface.', category: 'Product Design' },
+      ];
+
+  const safeEducation = education.length
+    ? education
+    : [{ id: 'e1', institution: 'Design Academy', degree: 'BFA Interaction Design', score: '3.9 GPA' }];
+
+  const safeSkills = skills.length ? skills : ['Figma', 'Prototyping', 'Wireframing', 'User Research'];
+
+  // High-contrast, monochromatic palette
+  const colors = {
+    bg: '#f9f9f9',
+    fg: '#111111',
+    muted: '#767676',
+    border: '#e5e5e5',
+  };
+
+  const fonts = {
+    sans: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+    serif: "'Playfair Display', Didot, 'Times New Roman', serif",
+  };
 
   return (
-    <div style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', backgroundColor: '#ffffff', color: '#111111', padding: '5vw 10vw' }}>
+    <div style={{ backgroundColor: colors.bg, color: colors.fg, fontFamily: fonts.sans, minHeight: '100vh', paddingBottom: '10vh' }}>
       
-      {/* Hero Section */}
-      <header style={{ height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <h1 style={{ fontSize: '8vw', fontWeight: '800', lineHeight: '1.1', letterSpacing: '-0.03em', margin: '0' }}>
-          {name}.
+      {/* NAVIGATION */}
+      <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '2rem 5vw', borderBottom: `1px solid ${colors.border}`, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '500' }}>
+        <div>{name}</div>
+        <div>{role}</div>
+      </nav>
+
+      {/* CINEMATIC HERO */}
+      <header style={{ padding: '15vh 5vw 10vh 5vw' }}>
+        <h1 style={{ 
+          fontFamily: fonts.serif, 
+          fontSize: 'clamp(3rem, 10vw, 8rem)', 
+          lineHeight: '1', 
+          margin: '0 0 2rem 0', 
+          letterSpacing: '-0.02em',
+          fontWeight: '400',
+          maxWidth: '900px'
+        }}>
+          Designing <br/><span style={{ fontStyle: 'italic', color: colors.muted }}>digital</span> experiences.
         </h1>
-        <h2 style={{ fontSize: '3vw', fontWeight: '400', color: '#666666', marginTop: '20px' }}>
-          {role}
-        </h2>
+        <p style={{ 
+          fontSize: 'clamp(1rem, 2vw, 1.5rem)', 
+          lineHeight: '1.6', 
+          maxWidth: '600px', 
+          margin: 0,
+          color: colors.fg,
+          fontWeight: '300'
+        }}>
+          {bio}
+        </p>
       </header>
 
-      {/* About Section */}
-      <section style={{ paddingBottom: '15vh' }}>
-        <p style={{ fontSize: '2.5vw', lineHeight: '1.4', maxWidth: '80%' }}>
-          {about}
-        </p>
+      {/* ASYMMETRICAL PROJECT GRID */}
+      <section style={{ padding: '5vh 5vw' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: `2px solid ${colors.fg}`, paddingBottom: '1rem', marginBottom: '4rem' }}>
+          <h2 style={{ fontSize: '2rem', margin: 0, fontWeight: '500' }}>Selected Works</h2>
+          <span style={{ color: colors.muted, fontSize: '0.9rem' }}>{new Date().getFullYear()}</span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8rem' }}>
+          {safeProjects.map((project, index) => {
+            const isHovered = hoveredProject === project.id;
+            const isEven = index % 2 === 0;
+
+            return (
+              <div 
+                key={project.id || index}
+                onMouseEnter={() => setHoveredProject(project.id)}
+                onMouseLeave={() => setHoveredProject(null)}
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: isEven ? 'row' : 'row-reverse', 
+                  gap: '4vw',
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}
+              >
+                {/* Image Container - Strict no-overlay placement */}
+                <div style={{ 
+                  flex: '1 1 500px', 
+                  backgroundColor: '#e5e5e5', 
+                  aspectRatio: '4/3', 
+                  overflow: 'hidden',
+                  position: 'relative'
+                }}>
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: '#d4d4d4',
+                    transform: isHovered ? 'scale(1.03)' : 'scale(1)',
+                    transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: colors.muted
+                  }}>
+                    <span style={{ letterSpacing: '0.1em', fontSize: '0.85rem', textTransform: 'uppercase' }}>Visual Asset</span>
+                  </div>
+                </div>
+
+                {/* Project Typography */}
+                <div style={{ flex: '1 1 300px', padding: '2rem 0' }}>
+                  <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.muted, display: 'block', marginBottom: '1rem' }}>
+                    0{index + 1} — {project.category || 'Case Study'}
+                  </span>
+                  <h3 style={{ 
+                    fontFamily: fonts.serif, 
+                    fontSize: 'clamp(2rem, 4vw, 3.5rem)', 
+                    margin: '0 0 1.5rem 0', 
+                    fontWeight: '400',
+                    lineHeight: '1.1'
+                  }}>
+                    {project.title}
+                  </h3>
+                  <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: colors.muted, margin: 0, maxWidth: '400px' }}>
+                    {project.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
-      {/* Visual Projects Grid */}
-      <section>
-        {projects.map((project) => (
-          <div key={project.id} style={{ marginBottom: '10vh' }}>
-            <div style={{ width: '100%', backgroundColor: '#f5f5f5', overflow: 'hidden', aspectRatio: '16/9' }}>
-              <img 
-                src={project.imageUrl} 
-                alt={project.title} 
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
-              />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', fontSize: '1.2rem' }}>
-              <strong style={{ fontWeight: '600' }}>{project.title}</strong>
-              <span style={{ color: '#666666' }}>{project.category}</span>
-            </div>
+      {/* SKILLS & EDUCATION ROW */}
+      <section style={{ padding: '10vh 5vw', display: 'flex', flexWrap: 'wrap', gap: '5vw' }}>
+        {/* Skills */}
+        <div style={{ flex: '1 1 300px' }}>
+          <h3 style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${colors.border}`, paddingBottom: '1rem', marginBottom: '2rem' }}>Core Capabilities</h3>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {safeSkills.map((skill, i) => (
+              <li key={i} style={{ fontSize: '1.5rem', fontWeight: '300' }}>{skill}</li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Education */}
+        <div style={{ flex: '1 1 300px' }}>
+          <h3 style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${colors.border}`, paddingBottom: '1rem', marginBottom: '2rem' }}>Education</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {safeEducation.map((edu, i) => (
+              <div key={edu.id || i}>
+                <h4 style={{ fontFamily: fonts.serif, fontSize: '1.5rem', margin: '0 0 0.5rem 0', fontWeight: '400' }}>{edu.institution}</h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: colors.muted, fontSize: '0.95rem' }}>
+                  <span>{edu.degree}</span>
+                  <span>{edu.score}</span>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer style={{ paddingTop: '10vh', borderTop: '2px solid #111111', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '4vw', margin: 0 }}>Let's Talk.</h3>
-        <a href={`mailto:${contactEmail}`} style={{ fontSize: '1.5vw', color: '#111111', textDecoration: 'none', borderBottom: '1px solid #111111' }}>
-          {contactEmail}
-        </a>
+      {/* FOOTER */}
+      <footer style={{ padding: '10vh 5vw 0 5vw', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: '400', margin: '0 0 3rem 0', fontFamily: fonts.serif }}>
+          Let's create something <span style={{ fontStyle: 'italic', color: colors.muted }}>exceptional.</span>
+        </h2>
+        
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+          {socials.email && (
+            <a href={`mailto:${socials.email}`} style={{ color: colors.fg, textDecoration: 'none', fontSize: '1.1rem', borderBottom: `1px solid ${colors.fg}`, paddingBottom: '0.2rem' }}>
+              Email
+            </a>
+          )}
+          {socials.linkedin && (
+            <a href={socials.linkedin} target="_blank" rel="noreferrer" style={{ color: colors.fg, textDecoration: 'none', fontSize: '1.1rem', borderBottom: `1px solid ${colors.fg}`, paddingBottom: '0.2rem' }}>
+              LinkedIn
+            </a>
+          )}
+          {socials.github && (
+            <a href={socials.github} target="_blank" rel="noreferrer" style={{ color: colors.fg, textDecoration: 'none', fontSize: '1.1rem', borderBottom: `1px solid ${colors.fg}`, paddingBottom: '0.2rem' }}>
+              GitHub
+            </a>
+          )}
+        </div>
       </footer>
 
     </div>
   );
-};
-
-export default UIUXDesigner;
+}
