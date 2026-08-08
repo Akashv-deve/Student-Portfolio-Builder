@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
 const PortfolioSchema = new mongoose.Schema({
+  // 👇 ADD THIS LINE: Links the portfolio to the User model
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   userSlug: { type: String, required: true, unique: true }, 
   
   personalInfo: {

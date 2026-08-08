@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const Portfolio = require('./models/Portfolio');
 const authRoutes = require('./routes/auth'); // Import our new model
+const authMiddleware = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -63,8 +64,8 @@ const normalizePortfolioPayload = (body = {}) => {
   };
 };
 
-// POST Route: Save the portfolio
-app.post('/api/portfolio', async (req, res) => {
+// POST Route: Save the portfolio (SECURED)
+app.post('/api/portfolio', authMiddleware, async (req, res) => {
   try {
     const normalizedPortfolio = normalizePortfolioPayload(req.body);
 
@@ -78,6 +79,11 @@ app.post('/api/portfolio', async (req, res) => {
       const existingPortfolio = await Portfolio.findOne({ userSlug: requestedSlug });
 
       if (existingPortfolio) {
+        // SECURITY CHECK: Does this portfolio belong to the logged-in user?
+        if (existingPortfolio.userId.toString() !== req.user.id) {
+          return res.status(403).json({ message: 'Unauthorized: You do not own this portfolio.' });
+        }
+
         const updatedPortfolio = await Portfolio.findOneAndUpdate(
           { userSlug: requestedSlug },
           { $set: { userSlug: requestedSlug, ...normalizedPortfolio } },
@@ -87,7 +93,7 @@ app.post('/api/portfolio', async (req, res) => {
         return res.status(200).json({
           message: 'Portfolio updated successfully!',
           slug: updatedPortfolio.userSlug,
-          url: `http://localhost:5173/${updatedPortfolio.userSlug}`
+          url: `${FRONTEND_URL}/${updatedPortfolio.userSlug}`
         });
       }
     }
@@ -95,6 +101,7 @@ app.post('/api/portfolio', async (req, res) => {
     const newSlug = requestedSlug || await generateUniqueSlug(normalizedPortfolio.personalInfo.fullName);
 
     const newPortfolio = new Portfolio({
+      userId: req.user.id, // 👈 Links the new portfolio to the logged-in user
       userSlug: newSlug,
       ...normalizedPortfolio
     });
@@ -113,9 +120,20 @@ app.post('/api/portfolio', async (req, res) => {
   }
 });
 
-// PUT Route: Update an existing portfolio
-app.put('/api/portfolio/:slug', async (req, res) => {
+// PUT Route: Update an existing portfolio (SECURED)
+app.put('/api/portfolio/:slug', authMiddleware, async (req, res) => {
   try {
+    const existingPortfolio = await Portfolio.findOne({ userSlug: req.params.slug });
+
+    if (!existingPortfolio) {
+      return res.status(404).json({ message: 'Portfolio not found to update.' });
+    }
+
+    // SECURITY CHECK: Does this portfolio belong to the logged-in user?
+    if (existingPortfolio.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Unauthorized: You do not own this portfolio.' });
+    }
+
     const normalizedPortfolio = normalizePortfolioPayload(req.body);
 
     const updatedPortfolio = await Portfolio.findOneAndUpdate(
@@ -123,10 +141,6 @@ app.put('/api/portfolio/:slug', async (req, res) => {
       { $set: { userSlug: req.params.slug, ...normalizedPortfolio } },
       { new: true, runValidators: true }
     );
-
-    if (!updatedPortfolio) {
-      return res.status(404).json({ message: 'Portfolio not found to update.' });
-    }
 
     res.status(200).json({ 
       message: 'Portfolio updated successfully!', 
