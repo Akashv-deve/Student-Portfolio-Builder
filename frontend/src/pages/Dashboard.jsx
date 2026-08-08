@@ -56,6 +56,13 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const handlePublish = async () => {
     console.log("Current Slug in State:", portfolioData.slug);
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("You must be logged in to publish! Redirecting to login...");
+      navigate('/auth');
+      return;
+    }
+
     if (!portfolioData.personal?.name) {
       alert("Please enter your Full Name before publishing!");
       return;
@@ -89,6 +96,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload),
       });

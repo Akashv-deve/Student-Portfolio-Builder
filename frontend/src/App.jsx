@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Auth from './pages/Auth';
 
 // Import your pages
 import LandingPage from './pages/LandingPage';
@@ -61,6 +62,7 @@ function App() {
             />
           } 
         />
+        <Route path="/auth" element={<Auth />} />
         
         {/* Route 3: The NEW Live Public Portfolio Route */}
         {/* The :slug means it will dynamically match anything like /akash-v */}
