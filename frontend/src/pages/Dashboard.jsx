@@ -144,6 +144,25 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
       description: "A minimalist, visually-driven layout tailored for high-resolution case studies.",
       tags: ["Figma", "Design Systems", "UX"],
       placeholderTitle: "UI/UX Layout"
+    },
+    // NEW TEMPLATES ADDED BELOW
+    {
+      title: "Embedded Systems Engineer Portfolio",
+      description: "A technical template structured to present hardware integrations, microcontroller programming, and architectural diagrams.",
+      tags: ["C", "IoT", "Microcontrollers"],
+      placeholderTitle: "Embedded UI"
+    },
+    {
+      title: "Data Analyst Portfolio",
+      description: "A data-driven template perfect for embedding interactive charts, dashboards, and detailed statistical analysis case studies.",
+      tags: ["Python", "SQL", "Tableau"],
+      placeholderTitle: "Data Dashboard"
+    },
+    {
+      title: "Full Stack Developer Portfolio",
+      description: "A comprehensive, balanced template designed to exhibit both rich client-side interfaces and robust backend architecture.",
+      tags: ["Node.js", "React", "Databases"],
+      placeholderTitle: "Full Stack UI"
     }
   ];
 
@@ -266,7 +285,13 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
           ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
             <FrontendDeveloper data={portfolioData} />
           ) : portfolioData.selectedTemplate === "UI/UX Designer Portfolio" ? (
-            <UIUXDesigner portfolioData={portfolioData} />
+            <UIUXDesigner data={portfolioData} />
+          ) : portfolioData.selectedTemplate === "Embedded Systems Engineer Portfolio" ? (
+            <EmbeddedSystems data={portfolioData} />
+          ) : portfolioData.selectedTemplate === "Data Analyst Portfolio" ? (
+            <DataAnalyst data={portfolioData} />
+          ) : portfolioData.selectedTemplate === "Full Stack Developer Portfolio" ? (
+            <FullStack data={portfolioData} />
           ) : (
             <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
               <h3>Preview not available yet.</h3>

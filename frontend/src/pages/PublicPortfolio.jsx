@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import SoftwareEngineer from '../templates/SoftwareEngineer';
 import FrontendDeveloper from '../templates/FrontendDeveloper';
 import UIUXDesigner from '../templates/UIUXDesigner';
+import EmbeddedSystems from '../templates/EmbeddedSystems';
+import DataAnalyst from '../templates/DataAnalyst';
+import FullStack from '../templates/FullStack';
 
 const PublicPortfolio = () => {
   const { slug } = useParams(); 
@@ -67,13 +70,18 @@ const PublicPortfolio = () => {
     );
   }
 
-  // 👇 UPDATE THIS TO USE YOUR portfolioData STATE
   return (
     <>
       {portfolioData.template === "Frontend Developer Portfolio" ? (
         <FrontendDeveloper data={portfolioData} />
-        ) : portfolioData.template === "UI/UX Designer Portfolio" ? (
-        <UIUXDesigner portfolioData={portfolioData} />
+      ) : portfolioData.template === "UI/UX Designer Portfolio" ? (
+        <UIUXDesigner data={portfolioData} />
+      ) : portfolioData.template === "Embedded Systems Engineer Portfolio" ? (
+        <EmbeddedSystems data={portfolioData} />
+      ) : portfolioData.template === "Data Analyst Portfolio" ? (
+        <DataAnalyst data={portfolioData} />
+      ) : portfolioData.template === "Full Stack Developer Portfolio" ? (
+        <FullStack data={portfolioData} />
       ) : (
         <SoftwareEngineer data={portfolioData} />
       )}
