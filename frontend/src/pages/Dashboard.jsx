@@ -12,15 +12,35 @@ import EmbeddedSystems from '../templates/EmbeddedSystems';
 import DataAnalyst from '../templates/DataAnalyst';
 import FullStack from '../templates/FullStack';
 
+// ---------- shared design tokens (matches the landing page) ----------
+const colors = {
+  bg: '#0f0f11',
+  bgDeep: '#0a0a0c',
+  panel: '#1e1e24',
+  panelBorder: 'rgba(255, 255, 255, 0.1)',
+  textWhite: '#ffffff',
+  textLabel: '#a1a1aa',
+  textHelper: '#9ca3af',
+  indigo: '#6366f1',
+  purple: '#a855f7',
+  pink: '#ec4899',
+  danger: '#ef4444',
+  dangerHover: '#dc2626',
+  success: '#10b981',
+};
+
+const sans = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const gradient = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
+
 const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const navigate = useNavigate();
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
   const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
 
-  // 👈 GRAB THE USER EMAIL
+  // GRAB THE USER EMAIL
   const userEmail = localStorage.getItem('userEmail') || 'Guest';
 
-  // 👈 LOGOUT FUNCTION
+  // LOGOUT FUNCTION
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
@@ -31,7 +51,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const handleExport = async () => {
     const previewElement = document.getElementById('portfolio-preview');
     if (!previewElement) {
-      alert("Could not find the preview element to export!");
+      alert('Could not find the preview element to export!');
       return;
     }
 
@@ -54,27 +74,27 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 </body>
 </html>`;
 
-    zip.file("index.html", htmlContent);
-    const blob = await zip.generateAsync({ type: "blob" });
-    const fileName = portfolioData.personal?.name 
-      ? `${portfolioData.personal.name.replace(/\s+/g, '_')}_Portfolio.zip` 
+    zip.file('index.html', htmlContent);
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const fileName = portfolioData.personal?.name
+      ? `${portfolioData.personal.name.replace(/\s+/g, '_')}_Portfolio.zip`
       : 'Portfolio.zip';
-      
+
     saveAs(blob, fileName);
   };
 
   const handlePublish = async () => {
-    console.log("Current Slug in State:", portfolioData.slug);
+    console.log('Current Slug in State:', portfolioData.slug);
 
     const token = localStorage.getItem('token');
     if (!token) {
-      alert("You must be logged in to publish! Redirecting to login...");
+      alert('You must be logged in to publish! Redirecting to login...');
       navigate('/auth');
       return;
     }
 
     if (!portfolioData.personal?.name) {
-      alert("Please enter your Full Name before publishing!");
+      alert('Please enter your Full Name before publishing!');
       return;
     }
 
@@ -85,12 +105,12 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
       const normalizedSocials = {
         github: portfolioData.socials?.github || '',
         linkedin: portfolioData.socials?.linkedin || '',
-        email: portfolioData.socials?.email || ''
+        email: portfolioData.socials?.email || '',
       };
 
       const payload = {
         slug: portfolioData.slug || '',
-        template: portfolioData.selectedTemplate || "Software Engineer Portfolio",
+        template: portfolioData.selectedTemplate || 'Software Engineer Portfolio',
         personalInfo: {
           fullName: portfolioData.personal.name,
           role: portfolioData.personal.role,
@@ -99,14 +119,14 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         projects: Array.isArray(portfolioData.projects) ? portfolioData.projects : [],
         education: Array.isArray(portfolioData.education) ? portfolioData.education : [],
         skills: normalizedSkills,
-        socials: normalizedSocials
+        socials: normalizedSocials,
       };
 
       const response = await fetch('http://localhost:5000/api/portfolio', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -129,74 +149,155 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         alert(`Error: ${data?.message || 'Unknown error while publishing.'}`);
       }
     } catch (error) {
-      console.error("Publishing error:", error);
-      alert("Failed to publish. Check your console, bro.");
+      console.error('Publishing error:', error);
+      alert('Failed to publish. Check your console, bro.');
     }
   };
 
   const availableTemplates = [
     {
-      title: "Software Engineer Portfolio",
-      description: "A clean, code-focused template designed for backend and systems engineers.",
-      tags: ["Java", "C++", "System Design"],
-      placeholderTitle: "Software Eng UI"
+      title: 'Software Engineer Portfolio',
+      description: 'A clean, code-focused template designed for backend and systems engineers.',
+      tags: ['Java', 'C++', 'System Design'],
+      placeholderTitle: 'Software Eng UI',
     },
     {
-      title: "Frontend Developer Portfolio",
-      description: "A highly interactive, visually striking template built to showcase UI components.",
-      tags: ["React", "CSS", "Animations"],
-      placeholderTitle: "Frontend UI"
+      title: 'Frontend Developer Portfolio',
+      description: 'A highly interactive, visually striking template built to showcase UI components.',
+      tags: ['React', 'CSS', 'Animations'],
+      placeholderTitle: 'Frontend UI',
     },
     {
-      title: "UI/UX Designer Portfolio",
-      description: "A minimalist, visually-driven layout tailored for high-resolution case studies.",
-      tags: ["Figma", "Design Systems", "UX"],
-      placeholderTitle: "UI/UX Layout"
+      title: 'UI/UX Designer Portfolio',
+      description: 'A minimalist, visually-driven layout tailored for high-resolution case studies.',
+      tags: ['Figma', 'Design Systems', 'UX'],
+      placeholderTitle: 'UI/UX Layout',
     },
     {
-      title: "Embedded Systems Engineer Portfolio",
-      description: "A technical template structured to present hardware integrations, microcontroller programming, and architectural diagrams.",
-      tags: ["C", "IoT", "Microcontrollers"],
-      placeholderTitle: "Embedded UI"
+      title: 'Embedded Systems Engineer Portfolio',
+      description:
+        'A technical template structured to present hardware integrations, microcontroller programming, and architectural diagrams.',
+      tags: ['C', 'IoT', 'Microcontrollers'],
+      placeholderTitle: 'Embedded UI',
     },
     {
-      title: "Data Analyst Portfolio",
-      description: "A data-driven template perfect for embedding interactive charts, dashboards, and detailed statistical analysis case studies.",
-      tags: ["Python", "SQL", "Tableau"],
-      placeholderTitle: "Data Dashboard"
+      title: 'Data Analyst Portfolio',
+      description:
+        'A data-driven template perfect for embedding interactive charts, dashboards, and detailed statistical analysis case studies.',
+      tags: ['Python', 'SQL', 'Tableau'],
+      placeholderTitle: 'Data Dashboard',
     },
     {
-      title: "Full Stack Developer Portfolio",
-      description: "A comprehensive, balanced template designed to exhibit both rich client-side interfaces and robust backend architecture.",
-      tags: ["Node.js", "React", "Databases"],
-      placeholderTitle: "Full Stack UI"
-    }
+      title: 'Full Stack Developer Portfolio',
+      description:
+        'A comprehensive, balanced template designed to exhibit both rich client-side interfaces and robust backend architecture.',
+      tags: ['Node.js', 'React', 'Databases'],
+      placeholderTitle: 'Full Stack UI',
+    },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', fontFamily: 'sans-serif' }}>
-      
-      {/* 🚀 NEW PREMIUM TOP NAV BAR */}
-      <div style={{ height: '60px', backgroundColor: '#0f172a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2rem', color: '#f8fafc', flexShrink: 0, borderBottom: '1px solid #1e293b' }}>
-        <button 
-           onClick={() => navigate('/')}
-           style={{ padding: '0.5rem 1rem', cursor: 'pointer', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#1e293b', color: '#fff', fontSize: '0.9rem', fontWeight: 'bold', transition: 'all 0.2s' }}
-           onMouseOver={(e) => e.target.style.backgroundColor = '#334155'}
-           onMouseOut={(e) => e.target.style.backgroundColor = '#1e293b'}
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        width: '100vw',
+        fontFamily: sans,
+        background: colors.bg,
+      }}
+    >
+      {/* Exception: ::-webkit-scrollbar cannot be targeted via inline
+          style objects, so this narrow cosmetic rule is injected here. */}
+      <style>{`
+        .pb-dark-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .pb-dark-scroll::-webkit-scrollbar-track { background: transparent; }
+        .pb-dark-scroll::-webkit-scrollbar-thumb {
+          background-color: rgba(255, 255, 255, 0.12);
+          border-radius: 999px;
+        }
+        .pb-dark-scroll::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(168, 85, 247, 0.45);
+        }
+      `}</style>
+
+      {/* PREMIUM TOP NAV BAR */}
+      <div
+        style={{
+          height: '64px',
+          backgroundColor: colors.bgDeep,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '0 2rem',
+          color: colors.textWhite,
+          flexShrink: 0,
+          borderBottom: `1px solid ${colors.panelBorder}`,
+        }}
+      >
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            padding: '0.55rem 1.1rem',
+            cursor: 'pointer',
+            borderRadius: '999px',
+            border: `1px solid ${colors.panelBorder}`,
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            color: colors.textWhite,
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            fontFamily: sans,
+            transition: 'all 0.2s ease',
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.22)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+            e.currentTarget.style.borderColor = colors.panelBorder;
+          }}
         >
           ← Back to Home
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
-            <span style={{ fontSize: '0.9rem', color: '#cbd5e1' }}>Logged in as: <strong style={{ color: '#fff' }}>{userEmail}</strong></span>
+            <div
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: colors.success,
+                boxShadow: `0 0 8px ${colors.success}`,
+              }}
+            />
+            <span style={{ fontSize: '0.88rem', color: colors.textLabel }}>
+              Logged in as: <strong style={{ color: colors.textWhite }}>{userEmail}</strong>
+            </span>
           </div>
-          <button 
+          <button
             onClick={handleLogout}
-            style={{ padding: '0.4rem 1rem', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold', transition: 'all 0.2s' }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#dc2626'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#ef4444'}
+            style={{
+              padding: '0.5rem 1.2rem',
+              backgroundColor: 'rgba(239, 68, 68, 0.12)',
+              color: '#fca5a5',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              borderRadius: '999px',
+              cursor: 'pointer',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              fontFamily: sans,
+              transition: 'all 0.2s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = colors.danger;
+              e.currentTarget.style.color = '#fff';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.12)';
+              e.currentTarget.style.color = '#fca5a5';
+            }}
           >
             Logout
           </button>
@@ -205,28 +306,98 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 
       {/* MAIN BUILDER AREA */}
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        
         {/* LEFT PANE: Builder Controls */}
-        {/* Make sure overflowY is 'scroll' to prevent the jitter we fixed earlier! */}
-        <div style={{ flex: 1, padding: '2rem', backgroundColor: '#f4f4f5', overflowY: 'scroll', position: 'relative' }}>
-          
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#000' }}>Builder Controls</h2>
-          
+        <div
+          className="pb-dark-scroll"
+          style={{
+            flex: 1,
+            padding: '2rem',
+            backgroundColor: colors.bg,
+            overflowY: 'scroll',
+            position: 'relative',
+            boxSizing: 'border-box',
+          }}
+        >
+          <h2
+            style={{
+              fontSize: '1.5rem',
+              fontWeight: 800,
+              marginBottom: '1.5rem',
+              color: colors.textWhite,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Builder Controls
+          </h2>
+
           {/* INJECTED MODULAR FORM COMPONENT */}
           <BuilderForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} />
 
           {/* EXPORT & PUBLISH BUTTONS */}
-          <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem', marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
-            <button 
+          <div
+            style={{
+              marginTop: '3rem',
+              borderTop: `1px solid ${colors.panelBorder}`,
+              paddingTop: '2rem',
+              marginBottom: '2rem',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '1rem',
+            }}
+          >
+            <button
               onClick={handleExport}
-              style={{ flex: 1, padding: '1rem', backgroundColor: '#1e293b', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              style={{
+                flex: 1,
+                minWidth: '180px',
+                padding: '1rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                color: colors.textWhite,
+                border: `1px solid ${colors.panelBorder}`,
+                borderRadius: '999px',
+                fontSize: '1rem',
+                fontWeight: 700,
+                fontFamily: sans,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.09)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.04)';
+                e.currentTarget.style.borderColor = colors.panelBorder;
+              }}
             >
               💾 Export HTML/CSS
             </button>
 
-            <button 
+            <button
               onClick={handlePublish}
-              style={{ flex: 1, padding: '1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)', transition: 'all 0.2s ease' }}
+              style={{
+                flex: 1,
+                minWidth: '180px',
+                padding: '1rem',
+                background: gradient,
+                color: '#fff',
+                border: 'none',
+                borderRadius: '999px',
+                fontSize: '1rem',
+                fontWeight: 700,
+                fontFamily: sans,
+                cursor: 'pointer',
+                boxShadow: '0 12px 26px -10px rgba(168, 85, 247, 0.55)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 18px 34px -10px rgba(168, 85, 247, 0.7)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 12px 26px -10px rgba(168, 85, 247, 0.55)';
+              }}
             >
               🚀 Publish to Web
             </button>
@@ -234,55 +405,104 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 
           {/* Template Selection Section */}
           <div style={{ paddingBottom: '2rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#000' }}>Choose Template</label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {availableTemplates.map((tmpl, idx) => (
-                <div 
-                  key={idx}
-                  onMouseEnter={() => setHoveredTemplate(tmpl)}
-                  onMouseLeave={() => setHoveredTemplate(null)}
-                  onClick={() => setPortfolioData({ ...portfolioData, selectedTemplate: tmpl.title })}
-                  style={{
-                    padding: '0.75rem',
-                    borderRadius: '6px',
-                    border: portfolioData.selectedTemplate === tmpl.title ? '2px solid #3b82f6' : '2px solid #e2e8f0',
-                    backgroundColor: portfolioData.selectedTemplate === tmpl.title ? '#eff6ff' : '#fff',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <div style={{ fontWeight: 'bold', color: portfolioData.selectedTemplate === tmpl.title ? '#1d4ed8' : '#0f172a' }}>
-                    {tmpl.title}
+            <label
+              style={{
+                display: 'block',
+                marginBottom: '0.75rem',
+                fontWeight: 700,
+                color: colors.textWhite,
+                fontSize: '0.95rem',
+              }}
+            >
+              Choose Template
+            </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              {availableTemplates.map((tmpl, idx) => {
+                const isSelected = portfolioData.selectedTemplate === tmpl.title;
+                return (
+                  <div
+                    key={idx}
+                    onMouseEnter={() => setHoveredTemplate(tmpl)}
+                    onMouseLeave={() => setHoveredTemplate(null)}
+                    onClick={() => setPortfolioData({ ...portfolioData, selectedTemplate: tmpl.title })}
+                    style={{
+                      padding: '0.85rem 1rem',
+                      borderRadius: '10px',
+                      border: isSelected ? `1.5px solid ${colors.purple}` : `1px solid ${colors.panelBorder}`,
+                      backgroundColor: isSelected ? 'rgba(168, 85, 247, 0.1)' : colors.panel,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: isSelected ? '0 0 0 4px rgba(168, 85, 247, 0.12)' : 'none',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '0.92rem',
+                        color: isSelected ? '#e9d5ff' : colors.textWhite,
+                      }}
+                    >
+                      {tmpl.title}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* STABLE INFO BOX WITH FIXED MIN-HEIGHT */}
-            {(hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate)) && (
-              <div style={{
-                marginTop: '1rem',
-                padding: '1rem',
-                backgroundColor: '#1e293b',
-                color: '#fff',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                transition: 'all 0.2s ease',
-                minHeight: '160px'
-              }}>
+            {(hoveredTemplate || availableTemplates.find((t) => t.title === portfolioData.selectedTemplate)) && (
+              <div
+                style={{
+                  marginTop: '1rem',
+                  padding: '1.1rem',
+                  backgroundColor: colors.panel,
+                  border: `1px solid ${colors.panelBorder}`,
+                  color: colors.textWhite,
+                  borderRadius: '12px',
+                  boxShadow: '0 8px 24px -12px rgba(0, 0, 0, 0.5)',
+                  transition: 'all 0.2s ease',
+                  minHeight: '160px',
+                  boxSizing: 'border-box',
+                }}
+              >
                 {(() => {
-                  const displayTmpl = hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate);
+                  const displayTmpl =
+                    hoveredTemplate || availableTemplates.find((t) => t.title === portfolioData.selectedTemplate);
                   return (
                     <>
-                      <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '0.25rem', color: '#38bdf8' }}>
+                      <div
+                        style={{
+                          fontSize: '0.9rem',
+                          fontWeight: 700,
+                          marginBottom: '0.35rem',
+                          color: '#c4b5fd',
+                        }}
+                      >
                         {displayTmpl.placeholderTitle}
                       </div>
-                      <p style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '0.75rem', lineHeight: '1.4' }}>
+                      <p
+                        style={{
+                          fontSize: '0.83rem',
+                          color: colors.textHelper,
+                          marginBottom: '0.85rem',
+                          lineHeight: 1.5,
+                        }}
+                      >
                         {displayTmpl.description}
                       </p>
-                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                         {displayTmpl.tags.map((tag, tIdx) => (
-                          <span key={tIdx} style={{ fontSize: '0.7rem', backgroundColor: '#334155', padding: '2px 6px', borderRadius: '4px' }}>
+                          <span
+                            key={tIdx}
+                            style={{
+                              fontSize: '0.72rem',
+                              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                              border: `1px solid ${colors.panelBorder}`,
+                              color: colors.textLabel,
+                              padding: '3px 8px',
+                              borderRadius: '999px',
+                            }}
+                          >
                             {tag}
                           </span>
                         ))}
@@ -296,67 +516,235 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         </div>
 
         {/* RIGHT PANE: Live Preview */}
-        <div style={{ flex: 1.5, padding: '2rem', backgroundColor: '#ffffff', overflowY: 'auto', borderLeft: '2px solid #e4e4e7' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: '#000' }}>Live Preview</h2>
-            <span style={{ fontSize: '0.85rem', padding: '4px 8px', backgroundColor: '#e2e8f0', color: '#000', borderRadius: '4px', fontWeight: '500' }}>
-              Active Template: {portfolioData.selectedTemplate}
+        <div
+          style={{
+            flex: 1.5,
+            padding: '2rem',
+            backgroundColor: colors.bgDeep,
+            borderLeft: `1px solid ${colors.panelBorder}`,
+            boxSizing: 'border-box',
+            display: 'flex',         // <-- Added to control internal height
+            flexDirection: 'column', // <-- Added to stack header and preview
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: '0.75rem',
+              marginBottom: '1.25rem',
+              flexShrink: 0, // <-- Prevents the header from shrinking when content grows
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '1.5rem',
+                fontWeight: 800,
+                margin: 0,
+                color: colors.textWhite,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              Live Preview
+            </h2>
+            <span
+              style={{
+                fontSize: '0.8rem',
+                padding: '5px 10px',
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                border: `1px solid ${colors.panelBorder}`,
+                color: colors.textLabel,
+                borderRadius: '999px',
+                fontWeight: 600,
+              }}
+            >
+              Active Template: {portfolioData.selectedTemplate || 'None selected'}
             </span>
           </div>
 
           {/* DYNAMIC TEMPLATE RENDERING ENGINE */}
-          <div id="portfolio-preview" style={{ width: '100%', height: '100%' }}>
-            {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
+          <div
+            id="portfolio-preview"
+            className="pb-dark-scroll" // <-- Moved the custom scrollbar class here
+            style={{
+              width: '100%',
+              flex: 1, // <-- Forces the preview box to fill all remaining height
+              borderRadius: '16px',
+              overflowY: 'auto', // <-- Changed from 'hidden' so the template can scroll
+              overflowX: 'hidden',
+              border: `1px solid ${colors.panelBorder}`,
+            }}
+          >
+            {portfolioData.selectedTemplate === 'Software Engineer Portfolio' ? (
               <SoftwareEngineer data={portfolioData} portfolioData={portfolioData} />
-            ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
+            ) : portfolioData.selectedTemplate === 'Frontend Developer Portfolio' ? (
               <FrontendDeveloper data={portfolioData} portfolioData={portfolioData} />
-            ) : portfolioData.selectedTemplate === "UI/UX Designer Portfolio" ? (
+            ) : portfolioData.selectedTemplate === 'UI/UX Designer Portfolio' ? (
               <UIUXDesigner data={portfolioData} portfolioData={portfolioData} />
-            ) : portfolioData.selectedTemplate === "Embedded Systems Engineer Portfolio" ? (
+            ) : portfolioData.selectedTemplate === 'Embedded Systems Engineer Portfolio' ? (
               <EmbeddedSystems data={portfolioData} portfolioData={portfolioData} />
-            ) : portfolioData.selectedTemplate === "Data Analyst Portfolio" ? (
+            ) : portfolioData.selectedTemplate === 'Data Analyst Portfolio' ? (
               <DataAnalyst data={portfolioData} portfolioData={portfolioData} />
-            ) : portfolioData.selectedTemplate === "Full Stack Developer Portfolio" ? (
+            ) : portfolioData.selectedTemplate === 'Full Stack Developer Portfolio' ? (
               <FullStack data={portfolioData} portfolioData={portfolioData} />
             ) : (
-              <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
-                <h3>Preview not available yet.</h3>
-                <p>We are still building the {portfolioData.selectedTemplate} template!</p>
+              <div
+                style={{
+                  padding: '3rem',
+                  textAlign: 'center',
+                  color: colors.textHelper,
+                  border: `2px dashed ${colors.panelBorder}`,
+                  borderRadius: '12px',
+                  backgroundColor: colors.bg,
+                }}
+              >
+                <h3 style={{ color: colors.textWhite, margin: '0 0 0.5rem 0' }}>Preview not available yet.</h3>
+                <p style={{ margin: 0 }}>
+                  Select a template on the left to preview {portfolioData.selectedTemplate || 'your portfolio'}.
+                </p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* 🚀 PREMIUM SUCCESS MODAL OVERLAY */}
+      {/* PREMIUM SUCCESS MODAL OVERLAY */}
       {publishModal.isOpen && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
-          <div style={{ backgroundColor: '#ffffff', padding: '2.5rem', borderRadius: '12px', maxWidth: '450px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', transform: 'translateY(0)', animation: 'slideUp 0.3s ease-out' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
-            <h2 style={{ margin: '0 0 0.5rem 0', color: '#10b981', fontSize: '1.8rem' }}>Published Successfully!</h2>
-            <p style={{ margin: '0 0 1.5rem 0', color: '#64748b', fontSize: '1rem' }}>Your portfolio is live and ready to share with the world.</p>
-            
-            <div style={{ backgroundColor: '#f1f5f9', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid #e2e8f0', wordBreak: 'break-all' }}>
-              <a href={publishModal.url} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '1.1rem', textDecoration: 'none' }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: colors.panel,
+              border: `1px solid ${colors.panelBorder}`,
+              padding: '2.5rem',
+              borderRadius: '20px',
+              maxWidth: '450px',
+              width: '90%',
+              textAlign: 'center',
+              boxShadow: '0 30px 60px -15px rgba(0, 0, 0, 0.6)',
+              boxSizing: 'border-box',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: '-40%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '80%',
+                height: '160%',
+                background: 'radial-gradient(circle, rgba(168,85,247,0.28), transparent 65%)',
+                filter: 'blur(30px)',
+                pointerEvents: 'none',
+              }}
+            />
+            <div style={{ fontSize: '3rem', marginBottom: '1rem', position: 'relative' }}>🎉</div>
+            <h2
+              style={{
+                margin: '0 0 0.5rem 0',
+                color: colors.textWhite,
+                fontSize: '1.7rem',
+                fontWeight: 800,
+                position: 'relative',
+              }}
+            >
+              Published Successfully!
+            </h2>
+            <p
+              style={{
+                margin: '0 0 1.5rem 0',
+                color: colors.textHelper,
+                fontSize: '0.98rem',
+                position: 'relative',
+              }}
+            >
+              Your portfolio is live and ready to share with the world.
+            </p>
+
+            <div
+              style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.35)',
+                border: `1px solid ${colors.panelBorder}`,
+                padding: '1rem',
+                borderRadius: '10px',
+                marginBottom: '1.5rem',
+                wordBreak: 'break-all',
+                position: 'relative',
+              }}
+            >
+              <a
+                href={publishModal.url}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: '#c4b5fd',
+                  fontWeight: 700,
+                  fontSize: '1.05rem',
+                  textDecoration: 'none',
+                }}
+              >
                 {publishModal.url}
               </a>
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', position: 'relative' }}>
               <button
                 onClick={() => navigator.clipboard.writeText(publishModal.url)}
-                style={{ flex: 1, padding: '0.75rem', backgroundColor: '#f8fafc', color: '#0f172a', border: '2px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s' }}
-                onMouseOver={(e) => e.target.style.backgroundColor = '#e2e8f0'}
-                onMouseOut={(e) => e.target.style.backgroundColor = '#f8fafc'}
+                style={{
+                  flex: 1,
+                  padding: '0.8rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  color: colors.textWhite,
+                  border: `1px solid ${colors.panelBorder}`,
+                  borderRadius: '999px',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  fontSize: '0.95rem',
+                  fontFamily: sans,
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)')}
+                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.04)')}
               >
                 📋 Copy Link
               </button>
-              
+
               <button
                 onClick={() => setPublishModal({ isOpen: false, url: '' })}
-                style={{ flex: 1, padding: '0.75rem', backgroundColor: '#0f172a', color: '#ffffff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s' }}
-                onMouseOver={(e) => e.target.style.backgroundColor = '#334155'}
-                onMouseOut={(e) => e.target.style.backgroundColor = '#0f172a'}
+                style={{
+                  flex: 1,
+                  padding: '0.8rem',
+                  background: gradient,
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '999px',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  fontSize: '0.95rem',
+                  fontFamily: sans,
+                  transition: 'opacity 0.2s ease',
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.opacity = '0.88')}
+                onMouseOut={(e) => (e.currentTarget.style.opacity = '1')}
               >
                 Done
               </button>
