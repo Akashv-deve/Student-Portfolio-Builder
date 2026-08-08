@@ -12,83 +12,54 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
   const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
 
+  // THE DYNAMIC ZIP EXPORT ENGINE
   const handleExport = async () => {
-    const { personal, projects, education, skills, socials } = portfolioData;
+    // 1. Grab the live HTML directly from the preview pane
+    const previewElement = document.getElementById('portfolio-preview');
+    if (!previewElement) {
+      alert("Could not find the preview element to export!");
+      return;
+    }
+
+    const templateHTML = previewElement.innerHTML;
     const zip = new JSZip();
 
-    const cssContent = `
-      body { background-color: #1e1e1e; color: #a6accd; font-family: monospace; padding: 2rem; margin: 0; line-height: 1.6; }
-      .container { max-width: 800px; margin: 0 auto; }
-      h1 { color: #82aaff; font-size: 2.5rem; margin-bottom: 0.5rem; }
-      h2 { color: #c792ea; font-size: 1.5rem; margin-top: 0; }
-      h3 { margin-top: 2rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
-      .project, .edu { border-left: 2px solid #82aaff; padding-left: 1rem; margin-bottom: 1.5rem; }
-      .edu { border-left-color: #c792ea; }
-      .tag { background-color: #292d3e; color: #89ddff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem; margin-right: 0.5rem; display: inline-block; margin-bottom: 0.5rem; }
-      a { color: #82aaff; text-decoration: none; }
-      a:hover { text-decoration: underline; }
-      .contact-list { list-style-type: none; padding: 0; }
-      .contact-list span { color: #89ddff; }
-    `;
-
+    // 2. Wrap it in a clean HTML5 boilerplate
+    // We include a tiny CSS reset to ensure the inline styles render perfectly
     const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${personal.name || 'Developer'} | Portfolio</title>
-  <link rel="stylesheet" href="style.css">
+  <title>${portfolioData.personal?.name || 'Developer'} | Portfolio</title>
+  <style>
+    /* Basic reset to ensure consistent rendering across browsers */
+    body, html {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>${personal.name || 'developer_name'}</h1>
-      <h2>> ${personal.role || 'sys.role'}</h2>
-    </header>
-    <section>
-      <h3>~/about_me</h3>
-      <p>${personal.bio || ''}</p>
-    </section>
-    <section>
-      <h3 style="color: #c3e88d;">~/projects</h3>
-      ${projects.map(p => `
-        <div class="project">
-          <h4 style="color: #ffcb6b; margin: 0 0 0.5rem 0;">${p.title}</h4>
-          <p style="margin: 0;">${p.description}</p>
-        </div>
-      `).join('')}
-    </section>
-    <section>
-      <h3 style="color: #f07178;">~/education</h3>
-      ${education.map(e => `
-        <div class="edu">
-          <h4 style="color: #89ddff; margin: 0 0 0.25rem 0;">${e.institution}</h4>
-          <p style="margin: 0;">${e.degree} <span style="color: #c3e88d;">[${e.score}]</span></p>
-        </div>
-      `).join('')}
-    </section>
-    <section>
-      <h3 style="color: #ffcb6b;">~/skills</h3>
-      <div>
-        ${skills.filter(s => s).map(s => `<span class="tag">${s}</span>`).join('')}
-      </div>
-    </section>
-    <section>
-      <h3 style="color: #f78c6c;">~/contact</h3>
-      <ul class="contact-list">
-        ${socials.email ? `<li><span>email: </span>${socials.email}</li>` : ''}
-        ${socials.github ? `<li><span>github: </span><a href="${socials.github}">${socials.github}</a></li>` : ''}
-        ${socials.linkedin ? `<li><span>linkedin: </span><a href="${socials.linkedin}">${socials.linkedin}</a></li>` : ''}
-      </ul>
-    </section>
-  </div>
+  ${templateHTML}
 </body>
 </html>`;
 
+    // 3. Zip it and Ship it (No external CSS file needed anymore!)
     zip.file("index.html", htmlContent);
-    zip.file("style.css", cssContent);
     const blob = await zip.generateAsync({ type: "blob" });
-    const fileName = personal.name ? `${personal.name.replace(/\s+/g, '_')}_Portfolio.zip` : 'Portfolio.zip';
+    const fileName = portfolioData.personal?.name 
+      ? `${portfolioData.personal.name.replace(/\s+/g, '_')}_Portfolio.zip` 
+      : 'Portfolio.zip';
+      
     saveAs(blob, fileName);
   };
 
@@ -289,7 +260,7 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
         </div>
 
         {/* DYNAMIC TEMPLATE RENDERING ENGINE */}
-        <div style={{ width: '100%', height: '100%' }}>
+        <div id="portfolio-preview" style={{ width: '100%', height: '100%' }}>
           {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
             <SoftwareEngineer data={portfolioData} />
           ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
