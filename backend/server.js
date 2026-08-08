@@ -6,6 +6,8 @@ const Portfolio = require('./models/Portfolio'); // Import our new model
 
 const app = express();
 
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
 app.use(cors());
 app.use(express.json());
 
@@ -98,7 +100,7 @@ app.post('/api/portfolio', async (req, res) => {
     res.status(201).json({ 
       message: 'Portfolio published successfully!', 
       slug: savedPortfolio.userSlug,
-      url: `http://localhost:5173/${savedPortfolio.userSlug}`
+      url: `${FRONTEND_URL}/${savedPortfolio.userSlug}`
     });
 
   } catch (error) {
@@ -125,7 +127,7 @@ app.put('/api/portfolio/:slug', async (req, res) => {
     res.status(200).json({ 
       message: 'Portfolio updated successfully!', 
       slug: updatedPortfolio.userSlug,
-      url: `http://localhost:5173/${updatedPortfolio.userSlug}`
+      url: `${FRONTEND_URL}/${updatedPortfolio.userSlug}`
     });
 
   } catch (error) {
