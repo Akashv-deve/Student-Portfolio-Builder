@@ -17,6 +17,16 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
   const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
 
+  // 👈 GRAB THE USER EMAIL
+  const userEmail = localStorage.getItem('userEmail') || 'Guest';
+
+  // 👈 LOGOUT FUNCTION
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    navigate('/auth');
+  };
+
   // THE DYNAMIC ZIP EXPORT ENGINE
   const handleExport = async () => {
     const previewElement = document.getElementById('portfolio-preview');
@@ -164,132 +174,157 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
   ];
 
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw', fontFamily: 'sans-serif' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', fontFamily: 'sans-serif' }}>
       
-      {/* LEFT PANE: Builder Controls */}
-      <div style={{ flex: 1, padding: '2rem', backgroundColor: '#f4f4f5', overflowY: 'scroll', position: 'relative' }}>
+      {/* 🚀 NEW PREMIUM TOP NAV BAR */}
+      <div style={{ height: '60px', backgroundColor: '#0f172a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2rem', color: '#f8fafc', flexShrink: 0, borderBottom: '1px solid #1e293b' }}>
         <button 
            onClick={() => navigate('/')}
-           style={{ marginBottom: '1.5rem', padding: '0.5rem 1rem', cursor: 'pointer', borderRadius: '4px', border: '1px solid #ccc' }}
+           style={{ padding: '0.5rem 1rem', cursor: 'pointer', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#1e293b', color: '#fff', fontSize: '0.9rem', fontWeight: 'bold', transition: 'all 0.2s' }}
+           onMouseOver={(e) => e.target.style.backgroundColor = '#334155'}
+           onMouseOut={(e) => e.target.style.backgroundColor = '#1e293b'}
         >
-        ← Back to Home
+          ← Back to Home
         </button>
-        
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#000' }}>Builder Controls</h2>
-        
-        {/* INJECTED MODULAR FORM COMPONENT */}
-        <BuilderForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} />
 
-        {/* EXPORT & PUBLISH BUTTONS */}
-        <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem', marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
-          <button 
-            onClick={handleExport}
-            style={{ flex: 1, padding: '1rem', backgroundColor: '#1e293b', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s ease' }}
-          >
-            💾 Export HTML/CSS
-          </button>
-
-          <button 
-            onClick={handlePublish}
-            style={{ flex: 1, padding: '1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)', transition: 'all 0.2s ease' }}
-          >
-            🚀 Publish to Web
-          </button>
-        </div>
-
-        {/* Template Selection Section */}
-        <div style={{ paddingBottom: '2rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#000' }}>Choose Template</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {availableTemplates.map((tmpl, idx) => (
-              <div 
-                key={idx}
-                onMouseEnter={() => setHoveredTemplate(tmpl)}
-                onMouseLeave={() => setHoveredTemplate(null)}
-                onClick={() => setPortfolioData({ ...portfolioData, selectedTemplate: tmpl.title })}
-                style={{
-                  padding: '0.75rem',
-                  borderRadius: '6px',
-                  /* FIX #1: Always use a 2px border to prevent layout shifting on click */
-                  border: portfolioData.selectedTemplate === tmpl.title ? '2px solid #3b82f6' : '2px solid #e2e8f0',
-                  backgroundColor: portfolioData.selectedTemplate === tmpl.title ? '#eff6ff' : '#fff',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <div style={{ fontWeight: 'bold', color: portfolioData.selectedTemplate === tmpl.title ? '#1d4ed8' : '#0f172a' }}>
-                  {tmpl.title}
-                </div>
-              </div>
-            ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
+            <span style={{ fontSize: '0.9rem', color: '#cbd5e1' }}>Logged in as: <strong style={{ color: '#fff' }}>{userEmail}</strong></span>
           </div>
-
-          {/* STABLE INFO BOX WITH FIXED MIN-HEIGHT */}
-          {(hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate)) && (
-            <div style={{
-              marginTop: '1rem',
-              padding: '1rem',
-              backgroundColor: '#1e293b',
-              color: '#fff',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.2s ease',
-              minHeight: '160px' /* 👈 THIS STOPS THE BOX FROM RESIZING */
-            }}>
-              {(() => {
-                const displayTmpl = hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate);
-                return (
-                  <>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '0.25rem', color: '#38bdf8' }}>
-                      {displayTmpl.placeholderTitle}
-                    </div>
-                    <p style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '0.75rem', lineHeight: '1.4' }}>
-                      {displayTmpl.description}
-                    </p>
-                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                      {displayTmpl.tags.map((tag, tIdx) => (
-                        <span key={tIdx} style={{ fontSize: '0.7rem', backgroundColor: '#334155', padding: '2px 6px', borderRadius: '4px' }}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-          )}
+          <button 
+            onClick={handleLogout}
+            style={{ padding: '0.4rem 1rem', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold', transition: 'all 0.2s' }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#dc2626'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#ef4444'}
+          >
+            Logout
+          </button>
         </div>
       </div>
 
-      {/* RIGHT PANE: Live Preview */}
-      <div style={{ flex: 1.5, padding: '2rem', backgroundColor: '#ffffff', overflowY: 'auto', borderLeft: '2px solid #e4e4e7' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: '#000' }}>Live Preview</h2>
-          <span style={{ fontSize: '0.85rem', padding: '4px 8px', backgroundColor: '#e2e8f0', color: '#000', borderRadius: '4px', fontWeight: '500' }}>
-            Active Template: {portfolioData.selectedTemplate}
-          </span>
+      {/* MAIN BUILDER AREA */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        
+        {/* LEFT PANE: Builder Controls */}
+        {/* Make sure overflowY is 'scroll' to prevent the jitter we fixed earlier! */}
+        <div style={{ flex: 1, padding: '2rem', backgroundColor: '#f4f4f5', overflowY: 'scroll', position: 'relative' }}>
+          
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#000' }}>Builder Controls</h2>
+          
+          {/* INJECTED MODULAR FORM COMPONENT */}
+          <BuilderForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} />
+
+          {/* EXPORT & PUBLISH BUTTONS */}
+          <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem', marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
+            <button 
+              onClick={handleExport}
+              style={{ flex: 1, padding: '1rem', backgroundColor: '#1e293b', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s ease' }}
+            >
+              💾 Export HTML/CSS
+            </button>
+
+            <button 
+              onClick={handlePublish}
+              style={{ flex: 1, padding: '1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)', transition: 'all 0.2s ease' }}
+            >
+              🚀 Publish to Web
+            </button>
+          </div>
+
+          {/* Template Selection Section */}
+          <div style={{ paddingBottom: '2rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#000' }}>Choose Template</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {availableTemplates.map((tmpl, idx) => (
+                <div 
+                  key={idx}
+                  onMouseEnter={() => setHoveredTemplate(tmpl)}
+                  onMouseLeave={() => setHoveredTemplate(null)}
+                  onClick={() => setPortfolioData({ ...portfolioData, selectedTemplate: tmpl.title })}
+                  style={{
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: portfolioData.selectedTemplate === tmpl.title ? '2px solid #3b82f6' : '2px solid #e2e8f0',
+                    backgroundColor: portfolioData.selectedTemplate === tmpl.title ? '#eff6ff' : '#fff',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ fontWeight: 'bold', color: portfolioData.selectedTemplate === tmpl.title ? '#1d4ed8' : '#0f172a' }}>
+                    {tmpl.title}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* STABLE INFO BOX WITH FIXED MIN-HEIGHT */}
+            {(hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate)) && (
+              <div style={{
+                marginTop: '1rem',
+                padding: '1rem',
+                backgroundColor: '#1e293b',
+                color: '#fff',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.2s ease',
+                minHeight: '160px'
+              }}>
+                {(() => {
+                  const displayTmpl = hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate);
+                  return (
+                    <>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '0.25rem', color: '#38bdf8' }}>
+                        {displayTmpl.placeholderTitle}
+                      </div>
+                      <p style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '0.75rem', lineHeight: '1.4' }}>
+                        {displayTmpl.description}
+                      </p>
+                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                        {displayTmpl.tags.map((tag, tIdx) => (
+                          <span key={tIdx} style={{ fontSize: '0.7rem', backgroundColor: '#334155', padding: '2px 6px', borderRadius: '4px' }}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* DYNAMIC TEMPLATE RENDERING ENGINE */}
-        <div id="portfolio-preview" style={{ width: '100%', height: '100%' }}>
-          {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
-            <SoftwareEngineer data={portfolioData} portfolioData={portfolioData} />
-          ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
-            <FrontendDeveloper data={portfolioData} portfolioData={portfolioData} />
-          ) : portfolioData.selectedTemplate === "UI/UX Designer Portfolio" ? (
-            <UIUXDesigner data={portfolioData} portfolioData={portfolioData} />
-          ) : portfolioData.selectedTemplate === "Embedded Systems Engineer Portfolio" ? (
-            <EmbeddedSystems data={portfolioData} portfolioData={portfolioData} />
-          ) : portfolioData.selectedTemplate === "Data Analyst Portfolio" ? (
-            <DataAnalyst data={portfolioData} portfolioData={portfolioData} />
-          ) : portfolioData.selectedTemplate === "Full Stack Developer Portfolio" ? (
-            <FullStack data={portfolioData} portfolioData={portfolioData} />
-          ) : (
-            <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
-              <h3>Preview not available yet.</h3>
-              <p>We are still building the {portfolioData.selectedTemplate} template!</p>
-            </div>
-          )}
+        {/* RIGHT PANE: Live Preview */}
+        <div style={{ flex: 1.5, padding: '2rem', backgroundColor: '#ffffff', overflowY: 'auto', borderLeft: '2px solid #e4e4e7' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: '#000' }}>Live Preview</h2>
+            <span style={{ fontSize: '0.85rem', padding: '4px 8px', backgroundColor: '#e2e8f0', color: '#000', borderRadius: '4px', fontWeight: '500' }}>
+              Active Template: {portfolioData.selectedTemplate}
+            </span>
+          </div>
+
+          {/* DYNAMIC TEMPLATE RENDERING ENGINE */}
+          <div id="portfolio-preview" style={{ width: '100%', height: '100%' }}>
+            {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
+              <SoftwareEngineer data={portfolioData} portfolioData={portfolioData} />
+            ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
+              <FrontendDeveloper data={portfolioData} portfolioData={portfolioData} />
+            ) : portfolioData.selectedTemplate === "UI/UX Designer Portfolio" ? (
+              <UIUXDesigner data={portfolioData} portfolioData={portfolioData} />
+            ) : portfolioData.selectedTemplate === "Embedded Systems Engineer Portfolio" ? (
+              <EmbeddedSystems data={portfolioData} portfolioData={portfolioData} />
+            ) : portfolioData.selectedTemplate === "Data Analyst Portfolio" ? (
+              <DataAnalyst data={portfolioData} portfolioData={portfolioData} />
+            ) : portfolioData.selectedTemplate === "Full Stack Developer Portfolio" ? (
+              <FullStack data={portfolioData} portfolioData={portfolioData} />
+            ) : (
+              <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
+                <h3>Preview not available yet.</h3>
+                <p>We are still building the {portfolioData.selectedTemplate} template!</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

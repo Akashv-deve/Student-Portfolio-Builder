@@ -29,6 +29,7 @@ export default function Auth() {
       if (response.ok) {
         // Save the JWT token to the browser!
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userEmail', data.user.email);
         // Redirect to the builder
         navigate('/dashboard'); 
       } else {
