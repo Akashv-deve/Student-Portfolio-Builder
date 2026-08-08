@@ -127,7 +127,7 @@ export default function DataAnalyst({ data, portfolioData }) {
         </div>
       </div>
 
-      {/* PROJECTS */}
+      {/* PROJECTS (TEXT ONLY) */}
       <div style={{ ...wrapper, paddingBottom: 'clamp(2.5rem, 6vh, 4rem)' }}>
         <SectionHeading title="Case Studies" subtitle="Selected analysis projects" colors={colors} />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem' }}>
@@ -135,21 +135,34 @@ export default function DataAnalyst({ data, portfolioData }) {
             const key = project.id || i;
             const isHovered = hoveredCard === key;
             const accent = accentPalette[i % accentPalette.length];
-            const img = project.imageUrl || 'https://placehold.co/800x600/eeeeee/999999?text=Visual+Asset';
             return (
-              <div key={key} onMouseEnter={() => setHoveredCard(key)} onMouseLeave={() => setHoveredCard(null)} style={{ background: colors.card, border: `1px solid ${colors.border}`, borderRadius: '20px', overflow: 'hidden', boxShadow: isHovered ? cardShadowHover : cardShadow, transform: isHovered ? 'translateY(-6px)' : 'translateY(0)', transition: 'all 0.28s cubic-bezier(0.22, 1, 0.36, 1)', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ width: '100%', aspectRatio: '16 / 10', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center', borderBottom: `1px solid ${colors.border}` }} />
-                <div style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', gap: '0.65rem', flexGrow: 1 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    Case Study {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, letterSpacing: '-0.01em', wordBreak: 'break-word' }}>
-                    {project.title || 'Untitled Case Study'}
-                  </h3>
-                  <p style={{ fontSize: '0.9rem', color: colors.textSecondary, lineHeight: 1.65, margin: 0, flexGrow: 1 }}>
-                    {project.description || 'No description provided for this case study yet.'}
-                  </p>
-                </div>
+              <div 
+                key={key} 
+                onMouseEnter={() => setHoveredCard(key)} 
+                onMouseLeave={() => setHoveredCard(null)} 
+                style={{ 
+                  background: colors.card, 
+                  border: `1px solid ${colors.border}`, 
+                  borderTop: `4px solid ${accent}`,
+                  borderRadius: '12px', 
+                  padding: '2rem',
+                  boxShadow: isHovered ? cardShadowHover : cardShadow, 
+                  transform: isHovered ? 'translateY(-6px)' : 'translateY(0)', 
+                  transition: 'all 0.28s cubic-bezier(0.22, 1, 0.36, 1)', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  gap: '1rem'
+                }}
+              >
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Case Study {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, letterSpacing: '-0.01em', color: colors.textPrimary }}>
+                  {project.title || 'Untitled Case Study'}
+                </h3>
+                <p style={{ fontSize: '0.95rem', color: colors.textSecondary, lineHeight: 1.65, margin: 0, flexGrow: 1 }}>
+                  {project.description || 'No description provided for this case study yet.'}
+                </p>
               </div>
             );
           })}

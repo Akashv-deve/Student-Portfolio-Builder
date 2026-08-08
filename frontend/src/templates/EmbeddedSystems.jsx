@@ -145,27 +145,37 @@ export default function EmbeddedSystems({ data, portfolioData }) {
         </div>
       </div>
 
-      {/* PROJECTS */}
+      {/* PROJECTS (TEXT ONLY) */}
       <div style={{ ...wrapper, paddingBottom: 'clamp(2.5rem, 6vh, 4rem)' }}>
         <SectionLabel index="02" title="MODULE REGISTRY / PROJECTS" colors={colors} mono={mono} />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.25rem' }}>
           {safeProjects.map((project, i) => {
             const key = project.id || i;
             const isHovered = hoveredProject === key;
-            const img = project.imageUrl || 'https://placehold.co/800x600/eeeeee/999999?text=Visual+Asset';
             return (
-              <div key={key} onMouseEnter={() => setHoveredProject(key)} onMouseLeave={() => setHoveredProject(null)} style={{ ...panelStyle, overflow: 'hidden', borderColor: isHovered ? colors.cyan : colors.line, boxShadow: isHovered ? `0 0 0 1px ${colors.cyan}55` : 'none', transition: 'all 0.25s ease', display: 'flex', flexDirection: 'column' }}>
+              <div 
+                key={key} 
+                onMouseEnter={() => setHoveredProject(key)} 
+                onMouseLeave={() => setHoveredProject(null)} 
+                style={{ 
+                  ...panelStyle, 
+                  padding: '2rem 1.5rem',
+                  borderColor: isHovered ? colors.cyan : colors.line, 
+                  boxShadow: isHovered ? `0 0 0 1px ${colors.cyan}55` : 'none', 
+                  transition: 'all 0.25s ease', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  gap: '1rem'
+                }}
+              >
                 {isHovered && cornerMarks(colors.cyan)}
-                <div style={{ width: '100%', aspectRatio: '4 / 3', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center', borderBottom: `1px solid ${colors.line}`, filter: isHovered ? 'none' : 'grayscale(0.3)', transition: 'filter 0.25s ease' }} />
-                <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', flexGrow: 1 }}>
-                  <span style={{ fontFamily: mono, fontSize: '0.7rem', color: colors.cyanDim }}>MOD_{String(i + 1).padStart(2, '0')}</span>
-                  <h3 style={{ fontFamily: mono, fontSize: '1.1rem', color: colors.white, margin: 0, wordBreak: 'break-word' }}>
-                    {project.title || 'UNTITLED_MODULE'}
-                  </h3>
-                  <p style={{ fontFamily: sans, fontSize: '0.88rem', color: colors.muted, lineHeight: 1.6, margin: 0, flexGrow: 1 }}>
-                    {project.description || 'No description provided for this module yet.'}
-                  </p>
-                </div>
+                <span style={{ fontFamily: mono, fontSize: '0.7rem', color: colors.cyanDim }}>MOD_{String(i + 1).padStart(2, '0')}</span>
+                <h3 style={{ fontFamily: mono, fontSize: '1.3rem', color: colors.white, margin: 0, wordBreak: 'break-word' }}>
+                  {project.title || 'UNTITLED_MODULE'}
+                </h3>
+                <p style={{ fontFamily: sans, fontSize: '0.95rem', color: colors.muted, lineHeight: 1.6, margin: 0, flexGrow: 1 }}>
+                  {project.description || 'No description provided for this module yet.'}
+                </p>
               </div>
             );
           })}

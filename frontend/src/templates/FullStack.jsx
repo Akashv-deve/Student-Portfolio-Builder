@@ -147,35 +147,46 @@ export default function FullStack({ data, portfolioData }) {
         </div>
       </div>
 
-      {/* PROJECTS */}
+      {/* PROJECTS (TEXT ONLY) */}
       <div style={{ ...wrapper, paddingBottom: 'clamp(3rem, 8vh, 5rem)' }}>
         <span style={{ ...eyebrow, textAlign: 'center', display: 'block' }}>Selected Work</span>
         <h2 style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.3rem)', fontWeight: 800, textAlign: 'center', margin: '0 0 3rem 0', letterSpacing: '-0.01em' }}>
           Projects
         </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(2.5rem, 6vh, 4rem)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '1.5rem' }}>
           {safeProjects.map((project, i) => {
             const key = project.id || i;
             const isHovered = hoveredProject === key;
-            const reversed = i % 2 === 1;
-            const img = project.imageUrl || 'https://placehold.co/800x600/eeeeee/999999?text=Visual+Asset';
             return (
-              <div key={key} onMouseEnter={() => setHoveredProject(key)} onMouseLeave={() => setHoveredProject(null)} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 'clamp(1.5rem, 4vw, 3rem)', alignItems: 'center' }}>
-                <div style={{ order: reversed ? 2 : 1, borderRadius: '20px', overflow: 'hidden', border: `1px solid ${isHovered ? colors.borderHover : colors.border}`, aspectRatio: '16 / 10', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center', boxShadow: isHovered ? '0 30px 60px -20px rgba(99,102,241,0.35)' : '0 10px 30px -15px rgba(0,0,0,0.5)', transform: isHovered ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)' }} />
-                <div style={{ order: reversed ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.08em', ...gradientText }}>
-                    PROJECT {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <h3 style={{ fontSize: 'clamp(1.3rem, 2.6vw, 1.8rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.01em', wordBreak: 'break-word' }}>
-                    {project.title || 'Untitled Project'}
-                  </h3>
-                  <p style={{ fontSize: '0.95rem', color: colors.textSecondary, lineHeight: 1.75, margin: 0 }}>
-                    {project.description || 'No description provided for this project yet.'}
-                  </p>
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#a5b4fc', background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>Frontend</span>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f0abfc', background: 'rgba(236,72,153,0.12)', border: '1px solid rgba(236,72,153,0.25)', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>Backend</span>
-                  </div>
+              <div 
+                key={key} 
+                onMouseEnter={() => setHoveredProject(key)} 
+                onMouseLeave={() => setHoveredProject(null)} 
+                style={{ 
+                  background: colors.card,
+                  borderRadius: '20px', 
+                  padding: '2.5rem',
+                  border: `1px solid ${isHovered ? '#6366f1' : colors.border}`, 
+                  boxShadow: isHovered ? '0 20px 40px -10px rgba(99,102,241,0.15)' : '0 10px 30px -15px rgba(0,0,0,0.5)', 
+                  transform: isHovered ? 'translateY(-4px)' : 'translateY(0)', 
+                  transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem'
+                }}
+              >
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.08em', ...gradientText }}>
+                  PROJECT {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 style={{ fontSize: 'clamp(1.4rem, 2.6vw, 1.8rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.01em', wordBreak: 'break-word' }}>
+                  {project.title || 'Untitled Project'}
+                </h3>
+                <p style={{ fontSize: '1rem', color: colors.textSecondary, lineHeight: 1.75, margin: 0, flexGrow: 1 }}>
+                  {project.description || 'No description provided for this project yet.'}
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#a5b4fc', background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>Frontend</span>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f0abfc', background: 'rgba(236,72,153,0.12)', border: '1px solid rgba(236,72,153,0.25)', borderRadius: '8px', padding: '0.3rem 0.7rem' }}>Backend</span>
                 </div>
               </div>
             );
