@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const Portfolio = require('./models/Portfolio'); // Import our new model
+const Portfolio = require('./models/Portfolio');
+const authRoutes = require('./routes/auth'); // Import our new model
 
 const app = express();
 
@@ -10,6 +11,9 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 app.use(cors());
 app.use(express.json());
+
+// 👈 2. MOUNT THE AUTH ROUTES
+app.use('/api/auth', authRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Successfully connected to MongoDB Atlas!'))
