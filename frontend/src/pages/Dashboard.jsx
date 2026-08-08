@@ -159,7 +159,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
     <div style={{ display: 'flex', height: '100vh', width: '100vw', fontFamily: 'sans-serif' }}>
       
       {/* LEFT PANE: Builder Controls */}
-      <div style={{ flex: 1, padding: '2rem', backgroundColor: '#f4f4f5', overflowY: 'auto', position: 'relative' }}>
+      <div style={{ flex: 1, padding: '2rem', backgroundColor: '#f4f4f5', overflowY: 'scroll', position: 'relative' }}>
         <button 
            onClick={() => navigate('/')}
            style={{ marginBottom: '1.5rem', padding: '0.5rem 1rem', cursor: 'pointer', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -202,49 +202,54 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                 style={{
                   padding: '0.75rem',
                   borderRadius: '6px',
-                  border: portfolioData.selectedTemplate === tmpl.title ? '2px solid #007bff' : '1px solid #ddd',
-                  backgroundColor: '#fff',
+                  /* FIX #1: Always use a 2px border to prevent layout shifting on click */
+                  border: portfolioData.selectedTemplate === tmpl.title ? '2px solid #3b82f6' : '2px solid #e2e8f0',
+                  backgroundColor: portfolioData.selectedTemplate === tmpl.title ? '#eff6ff' : '#fff',
                   cursor: 'pointer',
-                  position: 'relative',
                   transition: 'all 0.2s ease'
                 }}
               >
-                <div style={{ fontWeight: 'bold', color: '#000' }}>{tmpl.title}</div>
-                <div style={{ fontSize: '0.85rem', color: '#666' }}>Hover to preview</div>
+                <div style={{ fontWeight: 'bold', color: portfolioData.selectedTemplate === tmpl.title ? '#1d4ed8' : '#0f172a' }}>
+                  {tmpl.title}
+                </div>
+              </div>
+            ))}
+          </div>
 
-                {/* HOVER PREVIEW POPUP BOX */}
-                {hoveredTemplate && hoveredTemplate.title === tmpl.title && (
-                  <div style={{
-                    position: 'absolute',
-                    left: '102%',
-                    top: '0',
-                    width: '260px',
-                    padding: '1rem',
-                    backgroundColor: '#1e293b',
-                    color: '#fff',
-                    borderRadius: '8px',
-                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
-                    zIndex: 50,
-                    pointerEvents: 'none'
-                  }}>
+          {/* STABLE INFO BOX WITH FIXED MIN-HEIGHT */}
+          {(hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate)) && (
+            <div style={{
+              marginTop: '1rem',
+              padding: '1rem',
+              backgroundColor: '#1e293b',
+              color: '#fff',
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.2s ease',
+              minHeight: '160px' /* 👈 THIS STOPS THE BOX FROM RESIZING */
+            }}>
+              {(() => {
+                const displayTmpl = hoveredTemplate || availableTemplates.find(t => t.title === portfolioData.selectedTemplate);
+                return (
+                  <>
                     <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '0.25rem', color: '#38bdf8' }}>
-                      {hoveredTemplate.placeholderTitle}
+                      {displayTmpl.placeholderTitle}
                     </div>
-                    <p style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '0.5rem', lineHeight: '1.4' }}>
-                      {hoveredTemplate.description}
+                    <p style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '0.75rem', lineHeight: '1.4' }}>
+                      {displayTmpl.description}
                     </p>
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                      {hoveredTemplate.tags.map((tag, tIdx) => (
+                      {displayTmpl.tags.map((tag, tIdx) => (
                         <span key={tIdx} style={{ fontSize: '0.7rem', backgroundColor: '#334155', padding: '2px 6px', borderRadius: '4px' }}>
                           {tag}
                         </span>
                       ))}
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  </>
+                );
+              })()}
+            </div>
+          )}
         </div>
       </div>
 
