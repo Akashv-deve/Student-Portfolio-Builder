@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import SoftwareEngineer from '../templates/SoftwareEngineer';
 import { useNavigate } from 'react-router-dom';
-import FrontendDeveloper from '../templates/FrontendDeveloper';
-import UIUXDesigner from '../templates/UIUXDesigner';
 import BuilderForm from '../components/BuilderForm';
 
-const Dashboard = ({ portfolioData, setPortfolioData}) => {
+// ALL 6 TEMPLATES IMPORTED
+import SoftwareEngineer from '../templates/SoftwareEngineer';
+import FrontendDeveloper from '../templates/FrontendDeveloper';
+import UIUXDesigner from '../templates/UIUXDesigner';
+import EmbeddedSystems from '../templates/EmbeddedSystems';
+import DataAnalyst from '../templates/DataAnalyst';
+import FullStack from '../templates/FullStack';
+
+const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const navigate = useNavigate();
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
   const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
 
   // THE DYNAMIC ZIP EXPORT ENGINE
   const handleExport = async () => {
-    // 1. Grab the live HTML directly from the preview pane
     const previewElement = document.getElementById('portfolio-preview');
     if (!previewElement) {
       alert("Could not find the preview element to export!");
@@ -24,8 +28,6 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
     const templateHTML = previewElement.innerHTML;
     const zip = new JSZip();
 
-    // 2. Wrap it in a clean HTML5 boilerplate
-    // We include a tiny CSS reset to ensure the inline styles render perfectly
     const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,19 +35,8 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${portfolioData.personal?.name || 'Developer'} | Portfolio</title>
   <style>
-    /* Basic reset to ensure consistent rendering across browsers */
-    body, html {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      width: 100%;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    *, *:before, *:after {
-      box-sizing: inherit;
-    }
+    body, html { margin: 0; padding: 0; box-sizing: border-box; width: 100%; min-height: 100vh; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    *, *:before, *:after { box-sizing: inherit; }
   </style>
 </head>
 <body>
@@ -53,7 +44,6 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
 </body>
 </html>`;
 
-    // 3. Zip it and Ship it (No external CSS file needed anymore!)
     zip.file("index.html", htmlContent);
     const blob = await zip.generateAsync({ type: "blob" });
     const fileName = portfolioData.personal?.name 
@@ -66,7 +56,7 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
   const handlePublish = async () => {
     console.log("Current Slug in State:", portfolioData.slug);
 
-    if (!portfolioData.personal.name) {
+    if (!portfolioData.personal?.name) {
       alert("Please enter your Full Name before publishing!");
       return;
     }
@@ -145,7 +135,6 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
       tags: ["Figma", "Design Systems", "UX"],
       placeholderTitle: "UI/UX Layout"
     },
-    // NEW TEMPLATES ADDED BELOW
     {
       title: "Embedded Systems Engineer Portfolio",
       description: "A technical template structured to present hardware integrations, microcontroller programming, and architectural diagrams.",
@@ -187,23 +176,14 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
         <div style={{ marginTop: '3rem', borderTop: '2px solid #ccc', paddingTop: '2rem', marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
           <button 
             onClick={handleExport}
-            style={{ 
-              flex: 1, padding: '1rem', backgroundColor: '#1e293b', color: 'white', 
-              border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', 
-              cursor: 'pointer', transition: 'all 0.2s ease'
-            }}
+            style={{ flex: 1, padding: '1rem', backgroundColor: '#1e293b', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s ease' }}
           >
             💾 Export HTML/CSS
           </button>
 
           <button 
             onClick={handlePublish}
-            style={{ 
-              flex: 1, padding: '1rem', backgroundColor: '#10b981', color: 'white', 
-              border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', 
-              cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)',
-              transition: 'all 0.2s ease'
-            }}
+            style={{ flex: 1, padding: '1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)', transition: 'all 0.2s ease' }}
           >
             🚀 Publish to Web
           </button>
@@ -266,7 +246,6 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
             ))}
           </div>
         </div>
-
       </div>
 
       {/* RIGHT PANE: Live Preview */}
@@ -281,17 +260,17 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
         {/* DYNAMIC TEMPLATE RENDERING ENGINE */}
         <div id="portfolio-preview" style={{ width: '100%', height: '100%' }}>
           {portfolioData.selectedTemplate === "Software Engineer Portfolio" ? (
-            <SoftwareEngineer data={portfolioData} />
+            <SoftwareEngineer data={portfolioData} portfolioData={portfolioData} />
           ) : portfolioData.selectedTemplate === "Frontend Developer Portfolio" ? (
-            <FrontendDeveloper data={portfolioData} />
+            <FrontendDeveloper data={portfolioData} portfolioData={portfolioData} />
           ) : portfolioData.selectedTemplate === "UI/UX Designer Portfolio" ? (
-            <UIUXDesigner data={portfolioData} />
+            <UIUXDesigner data={portfolioData} portfolioData={portfolioData} />
           ) : portfolioData.selectedTemplate === "Embedded Systems Engineer Portfolio" ? (
-            <EmbeddedSystems data={portfolioData} />
+            <EmbeddedSystems data={portfolioData} portfolioData={portfolioData} />
           ) : portfolioData.selectedTemplate === "Data Analyst Portfolio" ? (
-            <DataAnalyst data={portfolioData} />
+            <DataAnalyst data={portfolioData} portfolioData={portfolioData} />
           ) : portfolioData.selectedTemplate === "Full Stack Developer Portfolio" ? (
-            <FullStack data={portfolioData} />
+            <FullStack data={portfolioData} portfolioData={portfolioData} />
           ) : (
             <div style={{ padding: '3rem', textAlign: 'center', color: '#666', border: '2px dashed #ccc', borderRadius: '8px' }}>
               <h3>Preview not available yet.</h3>
@@ -300,48 +279,25 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
           )}
         </div>
       </div>
+
       {/* 🚀 PREMIUM SUCCESS MODAL OVERLAY */}
       {publishModal.isOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)', 
-          backdropFilter: 'blur(4px)',
-          display: 'flex', justifyContent: 'center', alignItems: 'center', 
-          zIndex: 9999
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff', padding: '2.5rem', borderRadius: '12px',
-            maxWidth: '450px', width: '90%', textAlign: 'center',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-            transform: 'translateY(0)', animation: 'slideUp 0.3s ease-out'
-          }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
+          <div style={{ backgroundColor: '#ffffff', padding: '2.5rem', borderRadius: '12px', maxWidth: '450px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', transform: 'translateY(0)', animation: 'slideUp 0.3s ease-out' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
             <h2 style={{ margin: '0 0 0.5rem 0', color: '#10b981', fontSize: '1.8rem' }}>Published Successfully!</h2>
-            <p style={{ margin: '0 0 1.5rem 0', color: '#64748b', fontSize: '1rem' }}>
-              Your portfolio is live and ready to share with the world.
-            </p>
+            <p style={{ margin: '0 0 1.5rem 0', color: '#64748b', fontSize: '1rem' }}>Your portfolio is live and ready to share with the world.</p>
             
-            <div style={{ 
-              backgroundColor: '#f1f5f9', padding: '1rem', borderRadius: '8px', 
-              marginBottom: '1.5rem', border: '1px solid #e2e8f0', wordBreak: 'break-all'
-            }}>
-              <a href={publishModal.url} target="_blank" rel="noreferrer" style={{
-                color: '#3b82f6', fontWeight: 'bold', fontSize: '1.1rem', textDecoration: 'none'
-              }}>
+            <div style={{ backgroundColor: '#f1f5f9', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid #e2e8f0', wordBreak: 'break-all' }}>
+              <a href={publishModal.url} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '1.1rem', textDecoration: 'none' }}>
                 {publishModal.url}
               </a>
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
               <button
-                onClick={() => {
-                  navigator.clipboard.writeText(publishModal.url);
-                }}
-                style={{
-                  flex: 1, padding: '0.75rem', backgroundColor: '#f8fafc', color: '#0f172a',
-                  border: '2px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', 
-                  fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s'
-                }}
+                onClick={() => navigator.clipboard.writeText(publishModal.url)}
+                style={{ flex: 1, padding: '0.75rem', backgroundColor: '#f8fafc', color: '#0f172a', border: '2px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s' }}
                 onMouseOver={(e) => e.target.style.backgroundColor = '#e2e8f0'}
                 onMouseOut={(e) => e.target.style.backgroundColor = '#f8fafc'}
               >
@@ -350,11 +306,7 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
               
               <button
                 onClick={() => setPublishModal({ isOpen: false, url: '' })}
-                style={{
-                  flex: 1, padding: '0.75rem', backgroundColor: '#0f172a', color: '#ffffff',
-                  border: 'none', borderRadius: '8px', cursor: 'pointer', 
-                  fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s'
-                }}
+                style={{ flex: 1, padding: '0.75rem', backgroundColor: '#0f172a', color: '#ffffff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', transition: 'all 0.2s' }}
                 onMouseOver={(e) => e.target.style.backgroundColor = '#334155'}
                 onMouseOut={(e) => e.target.style.backgroundColor = '#0f172a'}
               >
@@ -364,7 +316,6 @@ const Dashboard = ({ portfolioData, setPortfolioData}) => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
