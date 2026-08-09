@@ -21,9 +21,12 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // --- UTILITY FUNCTION: Generate Unique Slug ---
-const generateUniqueSlug = async (fullName) => {
-  // 1. Lowercase, replace spaces with hyphens, remove special characters
-  const baseSlug = fullName
+const generateUniqueSlug = async (requestedSlug, fullName) => {
+  // 1. Use the custom slug if provided, otherwise fall back to their full name
+  const targetText = requestedSlug ? requestedSlug : (fullName || 'portfolio');
+
+  // 2. Lowercase, replace spaces with hyphens, remove special characters
+  const baseSlug = targetText
     .toLowerCase()
     .trim()
     .replace(/[\s\W-]+/g, '-'); 
@@ -31,7 +34,7 @@ const generateUniqueSlug = async (fullName) => {
   let uniqueSlug = baseSlug;
   let counter = 1;
 
-  // 2. Keep checking the database until we find a slug that isn't taken
+  // 3. Check the database to make sure no one else claimed this exact custom URL
   while (await Portfolio.findOne({ userSlug: uniqueSlug })) {
     uniqueSlug = `${baseSlug}-${counter}`;
     counter++;
@@ -39,7 +42,6 @@ const generateUniqueSlug = async (fullName) => {
 
   return uniqueSlug;
 };
-
 // --- API ROUTES ---
 
 const normalizePortfolioPayload = (body = {}) => {
@@ -98,21 +100,24 @@ app.post('/api/portfolio', authMiddleware, async (req, res) => {
       }
     }
 
-    const newSlug = requestedSlug || await generateUniqueSlug(normalizedPortfolio.personalInfo.fullName);
+    // Pass BOTH the custom slug and the name into the function
+// so it safely checks if the custom URL is already taken by someone else!
+const newSlug = await generateUniqueSlug(req.body.slug, normalizedPortfolio.personalInfo.fullName);
 
-    const newPortfolio = new Portfolio({
-      userId: req.user.id, // 👈 Links the new portfolio to the logged-in user
-      userSlug: newSlug,
-      ...normalizedPortfolio
-    });
+const newPortfolio = new Portfolio({
+  userId: req.user.id, // 👈 Links the new portfolio to the logged-in user
+  userSlug: newSlug,
+  ...normalizedPortfolio
+});
 
-    const savedPortfolio = await newPortfolio.save();
+const savedPortfolio = await newPortfolio.save();
 
-    res.status(201).json({ 
-      message: 'Portfolio published successfully!', 
-      slug: savedPortfolio.userSlug,
-      url: `${FRONTEND_URL}/${savedPortfolio.userSlug}`
-    });
+// Make sure your response returns the newly generated slug back to the frontend!
+res.status(201).json({ 
+  message: 'Portfolio saved successfully', 
+  slug: newSlug,
+  url: `https://student-portfolio-builder-eta.vercel.app/${newSlug}` 
+});
 
   } catch (error) {
     console.error(error);
