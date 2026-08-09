@@ -114,6 +114,9 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
   const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
 
+  // 👇 ADD THIS NEW STATE:
+  const [isPublishing, setIsPublishing] = useState(false);
+
   // Which pane is visible on mobile: 'form' (Builder Controls) or 'preview' (Live Preview).
   // Ignored on desktop — both panes are always shown side by side there via the
   // media query below, which only hides panes under 768px.
@@ -180,6 +183,9 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
       return;
     }
 
+    // 👇 START THE LOADING STATE
+    setIsPublishing(true);
+
     try {
       const normalizedSkills = Array.isArray(portfolioData.skills)
         ? portfolioData.skills.filter(Boolean)
@@ -233,6 +239,9 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
     } catch (error) {
       console.error('Publishing error:', error);
       alert('Failed to publish. Check your console, bro.');
+    } finally {
+      // 👇 STOP THE LOADING STATE
+      setIsPublishing(false);
     }
   };
 
@@ -552,6 +561,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 
             <button
               onClick={handlePublish}
+              disabled={isPublishing} // 👈 Prevents double clicks
               style={{
                 flex: 1,
                 minWidth: '180px',
@@ -563,20 +573,26 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                 fontSize: '1rem',
                 fontWeight: 700,
                 fontFamily: sans,
-                cursor: 'pointer',
+                cursor: isPublishing ? 'wait' : 'pointer', // 👈 Changes cursor
+                opacity: isPublishing ? 0.75 : 1, // 👈 Dims button while loading
                 boxShadow: '0 12px 26px -10px rgba(168, 85, 247, 0.55)',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease',
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 18px 34px -10px rgba(168, 85, 247, 0.7)';
+                if (!isPublishing) {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 18px 34px -10px rgba(168, 85, 247, 0.7)';
+                }
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 12px 26px -10px rgba(168, 85, 247, 0.55)';
+                if (!isPublishing) {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 12px 26px -10px rgba(168, 85, 247, 0.55)';
+                }
               }}
             >
-              🚀 Publish to Web
+              {/* 👇 Dynamically switch the text/icon */}
+              {isPublishing ? '⏳ Publishing...' : '🚀 Publish to Web'}
             </button>
           </div>
 
