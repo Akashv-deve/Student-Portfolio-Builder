@@ -226,6 +226,13 @@ export default function LandingPage() {
         position: 'relative',
       }}
     >
+      {/* Inject rule to prevent Bento boxes from breaking the mobile grid */}
+      <style>{`
+        @media (max-width: 768px) {
+          .pb-bento-item { grid-column: span 1 !important; }
+        }
+      `}</style>
+
       {/* ================= NAVBAR ================= */}
       <div
         style={{
@@ -714,6 +721,7 @@ export default function LandingPage() {
             return (
               <div
                 key={feat.title}
+                className="pb-bento-item"
                 onMouseEnter={() => setHoveredFeature(i)}
                 onMouseLeave={() => setHoveredFeature(null)}
                 style={{

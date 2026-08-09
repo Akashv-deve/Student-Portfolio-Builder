@@ -318,9 +318,11 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           .pb-builder-main { flex-direction: column; }
           .pb-hide-mobile { display: none !important; }
           .pb-mobile-tabs { display: flex !important; }
-          .pb-pane-left, .pb-pane-right { flex: 1 1 auto !important; width: 100% !important; }
+          /* CHANGED: flex: 1 1 0 forces the pane to respect the screen height, enabling the inner scroll */
+          .pb-pane-left, .pb-pane-right { flex: 1 1 0 !important; width: 100% !important; height: 100% !important; }
           .pb-pane-left { padding: 1.25rem !important; }
-          .pb-pane-right { padding: 1.25rem !important; }
+          /* CHANGED: added overflow: hidden so the scroll stays strictly inside the preview window */
+          .pb-pane-right { padding: 1.25rem !important; overflow: hidden !important; }
           .pb-topnav-email { display: none !important; }
         }
       `}</style>
