@@ -226,29 +226,6 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
         </div>
       </div>
 
-      {/* --- CUSTOM URL SLUG INPUT --- */}
-<div style={{ marginBottom: '1.25rem' }}>
-  <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-    Custom URL Slug
-  </label>
-  <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#0f172a', borderRadius: '8px', border: '1px solid #475569', padding: '0.75rem 1rem' }}>
-    <span style={{ color: '#64748b', marginRight: '0.25rem', fontSize: '0.85rem' }}>
-      student-portfolio-builder-eta.vercel.app/
-    </span>
-    <input 
-      type="text" 
-      /* Make sure this matches the state variable name you use in BuilderForm! */
-      /* If your form uses 'formData', change 'portfolioData' to 'formData' */
-      value={portfolioData.slug || ''}
-      onChange={(e) => {
-        const formattedSlug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-        setPortfolioData({ ...portfolioData, slug: formattedSlug });
-      }}
-      style={{ width: '100%', backgroundColor: 'transparent', color: '#f8fafc', fontSize: '0.95rem', border: 'none', outline: 'none' }}
-      placeholder="my-cool-name"
-    />
-  </div>
-</div>
 
       {/* Projects */}
       <div style={styles.section}>
