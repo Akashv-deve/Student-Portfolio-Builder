@@ -75,60 +75,41 @@ app.post('/api/portfolio', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Full name is required to generate a URL.' });
     }
 
-    const requestedSlug = req.body?.slug && String(req.body.slug).trim();
-
-    if (requestedSlug) {
-      const existingPortfolio = await Portfolio.findOne({ userSlug: requestedSlug });
-
-      if (existingPortfolio) {
-        // SECURITY CHECK: Does this portfolio belong to the logged-in user?
-        if (existingPortfolio.userId.toString() !== req.user.id) {
-          return res.status(403).json({ message: 'Unauthorized: You do not own this portfolio.' });
-        }
-
-        const updatedPortfolio = await Portfolio.findOneAndUpdate(
-          { userSlug: requestedSlug },
-          { $set: { userSlug: requestedSlug, ...normalizedPortfolio } },
-          { new: true, runValidators: true }
-        );
-
-        return res.status(200).json({
-          message: 'Portfolio updated successfully!',
-          slug: updatedPortfolio.userSlug,
-          url: `${FRONTEND_URL}/${updatedPortfolio.userSlug}`
-        });
-      }
-    }
-
-// 1. Check if this user ALREADY has a portfolio in the database
+    // 1. Check if this user ALREADY has a portfolio in the database
     let existingPortfolio = await Portfolio.findOne({ userId: req.user.id });
     let finalSlug;
 
     if (existingPortfolio) {
       // --- UPDATE EXISTING PORTFOLIO ---
-      
+      const requestedSlug = req.body?.slug && String(req.body.slug).trim();
+
       // If they typed a NEW custom URL, we check if it's available
-      if (req.body.slug && req.body.slug !== existingPortfolio.userSlug) {
-        finalSlug = await generateUniqueSlug(req.body.slug, normalizedPortfolio.personalInfo.fullName);
+      if (requestedSlug && requestedSlug !== existingPortfolio.userSlug) {
+        finalSlug = await generateUniqueSlug(requestedSlug, normalizedPortfolio.personalInfo.fullName);
       } else {
         // Otherwise, lock in their exact same URL! No more random numbers!
         finalSlug = existingPortfolio.userSlug; 
       }
 
       // Overwrite the old data with the newly updated data
-      existingPortfolio.userSlug = finalSlug;
-      existingPortfolio.template = req.body.template || existingPortfolio.template;
-      existingPortfolio.personalInfo = normalizedPortfolio.personalInfo;
-      existingPortfolio.projects = normalizedPortfolio.projects;
-      existingPortfolio.education = normalizedPortfolio.education;
-      existingPortfolio.skills = normalizedPortfolio.skills;
-      existingPortfolio.socials = normalizedPortfolio.socials;
+      // 👇 FIXED: Using { returnDocument: 'after' } to eliminate the Mongoose warning
+      const updatedPortfolio = await Portfolio.findOneAndUpdate(
+        { userId: req.user.id },
+        { $set: { userSlug: finalSlug, ...normalizedPortfolio } },
+        { returnDocument: 'after', runValidators: true }
+      );
 
-      await existingPortfolio.save();
+      return res.status(200).json({
+        message: 'Portfolio updated successfully!',
+        slug: updatedPortfolio.userSlug,
+        // 👇 FIXED: Using string addition so Markdown brackets cannot survive!
+        url: "https://student-portfolio-builder-eta.vercel.app/" + updatedPortfolio.userSlug
+      });
 
     } else {
       // --- CREATE BRAND NEW PORTFOLIO (First time publishing) ---
-      finalSlug = await generateUniqueSlug(req.body.slug, normalizedPortfolio.personalInfo.fullName);
+      const requestedSlug = req.body?.slug && String(req.body.slug).trim();
+      finalSlug = await generateUniqueSlug(requestedSlug, normalizedPortfolio.personalInfo.fullName);
       
       const newPortfolio = new Portfolio({
         userId: req.user.id,
@@ -137,14 +118,14 @@ app.post('/api/portfolio', authMiddleware, async (req, res) => {
       });
       
       await newPortfolio.save();
-    }
 
-    // Send the correct final URL back to the frontend
-    res.status(200).json({
-      message: 'Portfolio saved successfully',
-      slug: finalSlug,
-      url: `https://student-portfolio-builder-eta.vercel.app/${finalSlug}`
-    });
+      return res.status(201).json({
+        message: 'Portfolio saved successfully',
+        slug: finalSlug,
+        // 👇 FIXED: Using string addition for creation as well!
+        url: "https://student-portfolio-builder-eta.vercel.app/" + finalSlug
+      });
+    }
 
   } catch (error) {
     console.error(error);
@@ -171,13 +152,13 @@ app.put('/api/portfolio/:slug', authMiddleware, async (req, res) => {
     const updatedPortfolio = await Portfolio.findOneAndUpdate(
       { userSlug: req.params.slug },
       { $set: { userSlug: req.params.slug, ...normalizedPortfolio } },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     res.status(200).json({ 
       message: 'Portfolio updated successfully!', 
       slug: updatedPortfolio.userSlug,
-      url: `https://student-portfolio-builder-eta.vercel.app/${updatedPortfolio.userSlug}`
+      url: "https://student-portfolio-builder-eta.vercel.app/" + updatedPortfolio.userSlug
     });
 
   } catch (error) {
