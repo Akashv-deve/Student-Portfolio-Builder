@@ -100,24 +100,51 @@ app.post('/api/portfolio', authMiddleware, async (req, res) => {
       }
     }
 
-    // Pass BOTH the custom slug and the name into the function
-// so it safely checks if the custom URL is already taken by someone else!
-const newSlug = await generateUniqueSlug(req.body.slug, normalizedPortfolio.personalInfo.fullName);
+// 1. Check if this user ALREADY has a portfolio in the database
+    let existingPortfolio = await Portfolio.findOne({ userId: req.user.id });
+    let finalSlug;
 
-const newPortfolio = new Portfolio({
-  userId: req.user.id, // 👈 Links the new portfolio to the logged-in user
-  userSlug: newSlug,
-  ...normalizedPortfolio
-});
+    if (existingPortfolio) {
+      // --- UPDATE EXISTING PORTFOLIO ---
+      
+      // If they typed a NEW custom URL, we check if it's available
+      if (req.body.slug && req.body.slug !== existingPortfolio.userSlug) {
+        finalSlug = await generateUniqueSlug(req.body.slug, normalizedPortfolio.personalInfo.fullName);
+      } else {
+        // Otherwise, lock in their exact same URL! No more random numbers!
+        finalSlug = existingPortfolio.userSlug; 
+      }
 
-const savedPortfolio = await newPortfolio.save();
+      // Overwrite the old data with the newly updated data
+      existingPortfolio.userSlug = finalSlug;
+      existingPortfolio.template = req.body.template || existingPortfolio.template;
+      existingPortfolio.personalInfo = normalizedPortfolio.personalInfo;
+      existingPortfolio.projects = normalizedPortfolio.projects;
+      existingPortfolio.education = normalizedPortfolio.education;
+      existingPortfolio.skills = normalizedPortfolio.skills;
+      existingPortfolio.socials = normalizedPortfolio.socials;
 
-// Make sure your response returns the newly generated slug back to the frontend!
-res.status(201).json({ 
-  message: 'Portfolio saved successfully', 
-  slug: newSlug,
-  url: `https://student-portfolio-builder-eta.vercel.app/${newSlug}` 
-});
+      await existingPortfolio.save();
+
+    } else {
+      // --- CREATE BRAND NEW PORTFOLIO (First time publishing) ---
+      finalSlug = await generateUniqueSlug(req.body.slug, normalizedPortfolio.personalInfo.fullName);
+      
+      const newPortfolio = new Portfolio({
+        userId: req.user.id,
+        userSlug: finalSlug,
+        ...normalizedPortfolio
+      });
+      
+      await newPortfolio.save();
+    }
+
+    // Send the correct final URL back to the frontend
+    res.status(200).json({
+      message: 'Portfolio saved successfully',
+      slug: finalSlug,
+      url: `https://student-portfolio-builder-eta.vercel.app/${finalSlug}`
+    });
 
   } catch (error) {
     console.error(error);
