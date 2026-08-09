@@ -177,7 +177,7 @@ app.put('/api/portfolio/:slug', authMiddleware, async (req, res) => {
     res.status(200).json({ 
       message: 'Portfolio updated successfully!', 
       slug: updatedPortfolio.userSlug,
-      url: `${FRONTEND_URL}/${updatedPortfolio.userSlug}`
+      url: `https://student-portfolio-builder-eta.vercel.app/${updatedPortfolio.userSlug}`
     });
 
   } catch (error) {
