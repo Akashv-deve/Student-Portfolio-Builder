@@ -116,6 +116,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 
   // 👇 ADD THIS NEW STATE:
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Which pane is visible on mobile: 'form' (Builder Controls) or 'preview' (Live Preview).
   // Ignored on desktop — both panes are always shown side by side there via the
@@ -132,18 +133,21 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
     navigate('/auth');
   };
 
-  // THE DYNAMIC ZIP EXPORT ENGINE
   const handleExport = async () => {
-    const previewElement = document.getElementById('portfolio-preview');
-    if (!previewElement) {
-      alert('Could not find the preview element to export!');
-      return;
-    }
+    // 👇 START THE LOADING STATE
+    setIsExporting(true);
+    
+    try {
+      const previewElement = document.getElementById('portfolio-preview');
+      if (!previewElement) {
+        alert('Could not find the preview element to export!');
+        return;
+      }
 
-    const templateHTML = previewElement.innerHTML;
-    const zip = new JSZip();
+      const templateHTML = previewElement.innerHTML;
+      const zip = new JSZip();
 
-    const htmlContent = `<!DOCTYPE html>
+      const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -159,13 +163,20 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 </body>
 </html>`;
 
-    zip.file('index.html', htmlContent);
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const fileName = portfolioData.personal?.name
-      ? `${portfolioData.personal.name.replace(/\s+/g, '_')}_Portfolio.zip`
-      : 'Portfolio.zip';
+      zip.file('index.html', htmlContent);
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const fileName = portfolioData.personal?.name
+        ? `${portfolioData.personal.name.replace(/\s+/g, '_')}_Portfolio.zip`
+        : 'Portfolio.zip';
 
-    saveAs(blob, fileName);
+      saveAs(blob, fileName);
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert('Failed to generate export file. Check your console, bro.');
+    } finally {
+      // 👇 STOP THE LOADING STATE
+      setIsExporting(false);
+    }
   };
 
   const handlePublish = async () => {
@@ -533,6 +544,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           >
             <button
               onClick={handleExport}
+              disabled={isExporting} // 👈 Prevents double clicks
               style={{
                 flex: 1,
                 minWidth: '180px',
@@ -544,19 +556,26 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                 fontSize: '1rem',
                 fontWeight: 700,
                 fontFamily: sans,
-                cursor: 'pointer',
+                cursor: isExporting ? 'wait' : 'pointer', // 👈 Changes cursor
+                opacity: isExporting ? 0.75 : 1, // 👈 Dims button while loading
                 transition: 'all 0.2s ease',
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.09)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+                // 👇 Only apply hover effects if NOT loading
+                if (!isExporting) {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.09)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+                }
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.04)';
-                e.currentTarget.style.borderColor = colors.panelBorder;
+                if (!isExporting) {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.04)';
+                  e.currentTarget.style.borderColor = colors.panelBorder;
+                }
               }}
             >
-              💾 Export HTML/CSS
+              {/* 👇 Dynamically switch the text/icon */}
+              {isExporting ? '⏳ Exporting...' : '💾 Export HTML/CSS'}
             </button>
 
             <button
