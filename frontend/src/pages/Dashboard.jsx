@@ -12,6 +12,8 @@ import EmbeddedSystems from '../templates/EmbeddedSystems';
 import DataAnalyst from '../templates/DataAnalyst';
 import FullStack from '../templates/FullStack';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 // ---------- shared design tokens (matches the landing page) ----------
 const colors = {
   bg: '#0f0f11',
@@ -202,7 +204,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         socials: normalizedSocials,
       };
 
-      const response = await fetch('http://localhost:5000/api/portfolio', {
+      const response = await fetch(`${API_BASE_URL}/api/portfolio`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
