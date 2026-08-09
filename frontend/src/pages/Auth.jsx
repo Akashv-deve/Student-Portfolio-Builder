@@ -9,16 +9,19 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    // Determines whether to call /api/auth/login or /api/auth/register
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/portfolio`, {
+      // FIXED: Now correctly connects to ${API_BASE_URL}${endpoint}
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -27,10 +30,11 @@ export default function Auth() {
       const data = await response.json();
 
       if (response.ok) {
-        // Save the JWT token to the browser!
+        // Save the JWT token and email to the browser
         localStorage.setItem('token', data.token);
         localStorage.setItem('userEmail', data.user.email);
-        // Redirect to the builder
+        
+        // Redirect to the dashboard
         navigate('/dashboard'); 
       } else {
         setError(data.message || 'Authentication failed.');
