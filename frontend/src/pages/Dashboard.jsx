@@ -32,10 +32,90 @@ const colors = {
 const sans = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 const gradient = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
 
+// ---------- per-template minimalist SVG icons ----------
+// Each icon is a small inline-styled functional component so it can be
+// dropped next to a template's title with a distinct, domain-matched shape.
+const iconBaseStyle = (color) => ({ color, display: 'block' });
+
+function IconSoftwareEngineer({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <path d="M9 6L3 12L9 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M15 6L21 12L15 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconFrontendDeveloper({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="9" y1="9" x2="9" y2="20" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function IconUIUXDesigner({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <path
+        d="M4 20L9.5 18.5L18 10C18.8 9.2 18.8 7.9 18 7.1L16.9 6C16.1 5.2 14.8 5.2 14 6L5.5 14.5L4 20Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <line x1="13" y1="7" x2="17" y2="11" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function IconEmbeddedSystems({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="9" y1="2" x2="9" y2="7" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="15" y1="2" x2="15" y2="7" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="9" y1="17" x2="9" y2="22" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="15" y1="17" x2="15" y2="22" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="2" y1="9" x2="7" y2="9" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="2" y1="15" x2="7" y2="15" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="17" y1="9" x2="22" y2="9" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="17" y1="15" x2="22" y2="15" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function IconDataAnalyst({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <line x1="4" y1="21" x2="20" y2="21" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <rect x="5" y="13" width="3.2" height="8" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="10.4" y="8" width="3.2" height="13" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="15.8" y="4" width="3.2" height="17" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function IconFullStack({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <path d="M12 3L3 8L12 13L21 8L12 3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M3 12L12 17L21 12" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M3 16L12 21L21 16" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const navigate = useNavigate();
   const [hoveredTemplate, setHoveredTemplate] = useState(null);
   const [publishModal, setPublishModal] = useState({ isOpen: false, url: '' });
+
+  // Which pane is visible on mobile: 'form' (Builder Controls) or 'preview' (Live Preview).
+  // Ignored on desktop — both panes are always shown side by side there via the
+  // media query below, which only hides panes under 768px.
+  const [mobileView, setMobileView] = useState('form');
 
   // GRAB THE USER EMAIL
   const userEmail = localStorage.getItem('userEmail') || 'Guest';
@@ -160,18 +240,21 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
       description: 'A clean, code-focused template designed for backend and systems engineers.',
       tags: ['Java', 'C++', 'System Design'],
       placeholderTitle: 'Software Eng UI',
+      icon: IconSoftwareEngineer,
     },
     {
       title: 'Frontend Developer Portfolio',
       description: 'A highly interactive, visually striking template built to showcase UI components.',
       tags: ['React', 'CSS', 'Animations'],
       placeholderTitle: 'Frontend UI',
+      icon: IconFrontendDeveloper,
     },
     {
       title: 'UI/UX Designer Portfolio',
       description: 'A minimalist, visually-driven layout tailored for high-resolution case studies.',
       tags: ['Figma', 'Design Systems', 'UX'],
       placeholderTitle: 'UI/UX Layout',
+      icon: IconUIUXDesigner,
     },
     {
       title: 'Embedded Systems Engineer Portfolio',
@@ -179,6 +262,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         'A technical template structured to present hardware integrations, microcontroller programming, and architectural diagrams.',
       tags: ['C', 'IoT', 'Microcontrollers'],
       placeholderTitle: 'Embedded UI',
+      icon: IconEmbeddedSystems,
     },
     {
       title: 'Data Analyst Portfolio',
@@ -186,6 +270,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         'A data-driven template perfect for embedding interactive charts, dashboards, and detailed statistical analysis case studies.',
       tags: ['Python', 'SQL', 'Tableau'],
       placeholderTitle: 'Data Dashboard',
+      icon: IconDataAnalyst,
     },
     {
       title: 'Full Stack Developer Portfolio',
@@ -193,8 +278,11 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         'A comprehensive, balanced template designed to exhibit both rich client-side interfaces and robust backend architecture.',
       tags: ['Node.js', 'React', 'Databases'],
       placeholderTitle: 'Full Stack UI',
+      icon: IconFullStack,
     },
   ];
+
+  const displayTmpl = hoveredTemplate || availableTemplates.find((t) => t.title === portfolioData.selectedTemplate);
 
   return (
     <div
@@ -207,8 +295,10 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         background: colors.bg,
       }}
     >
-      {/* Exception: ::-webkit-scrollbar cannot be targeted via inline
-          style objects, so this narrow cosmetic rule is injected here. */}
+      {/* Exceptions permitted for things inline styles cannot express:
+          ::-webkit-scrollbar cosmetics, and the mobile breakpoint that
+          switches the builder from a side-by-side layout to a tabbed,
+          stacked one under 768px. */}
       <style>{`
         .pb-dark-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
         .pb-dark-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -218,6 +308,18 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         }
         .pb-dark-scroll::-webkit-scrollbar-thumb:hover {
           background-color: rgba(168, 85, 247, 0.45);
+        }
+
+        .pb-mobile-tabs { display: none; }
+
+        @media (max-width: 768px) {
+          .pb-builder-main { flex-direction: column; }
+          .pb-hide-mobile { display: none !important; }
+          .pb-mobile-tabs { display: flex !important; }
+          .pb-pane-left, .pb-pane-right { flex: 1 1 auto !important; width: 100% !important; }
+          .pb-pane-left { padding: 1.25rem !important; }
+          .pb-pane-right { padding: 1.25rem !important; }
+          .pb-topnav-email { display: none !important; }
         }
       `}</style>
 
@@ -262,7 +364,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div className="pb-topnav-email" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div
               style={{
                 width: '8px',
@@ -304,11 +406,60 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         </div>
       </div>
 
+      {/* MOBILE TAB BAR — hidden on desktop, shown only under 768px */}
+      <div
+        className="pb-mobile-tabs"
+        style={{
+          flexShrink: 0,
+          backgroundColor: colors.bgDeep,
+          borderBottom: `1px solid ${colors.panelBorder}`,
+          padding: '0.6rem 1rem',
+          gap: '0.5rem',
+        }}
+      >
+        <button
+          onClick={() => setMobileView('form')}
+          style={{
+            flex: 1,
+            padding: '0.6rem',
+            borderRadius: '999px',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            fontFamily: sans,
+            background: mobileView === 'form' ? gradient : 'rgba(255, 255, 255, 0.05)',
+            color: mobileView === 'form' ? '#fff' : colors.textLabel,
+            transition: 'all 0.2s ease',
+          }}
+        >
+          📝 Edit
+        </button>
+        <button
+          onClick={() => setMobileView('preview')}
+          style={{
+            flex: 1,
+            padding: '0.6rem',
+            borderRadius: '999px',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            fontFamily: sans,
+            background: mobileView === 'preview' ? gradient : 'rgba(255, 255, 255, 0.05)',
+            color: mobileView === 'preview' ? '#fff' : colors.textLabel,
+            transition: 'all 0.2s ease',
+          }}
+        >
+          👁 Preview
+        </button>
+      </div>
+
       {/* MAIN BUILDER AREA */}
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div className="pb-builder-main" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         {/* LEFT PANE: Builder Controls */}
         <div
-          className="pb-dark-scroll"
+          className={`pb-dark-scroll pb-pane-left${mobileView === 'preview' ? ' pb-hide-mobile' : ''}`}
           style={{
             flex: 1,
             padding: '2rem',
@@ -419,6 +570,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               {availableTemplates.map((tmpl, idx) => {
                 const isSelected = portfolioData.selectedTemplate === tmpl.title;
+                const TmplIcon = tmpl.icon;
                 return (
                   <div
                     key={idx}
@@ -426,6 +578,9 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                     onMouseLeave={() => setHoveredTemplate(null)}
                     onClick={() => setPortfolioData({ ...portfolioData, selectedTemplate: tmpl.title })}
                     style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.85rem',
                       padding: '0.85rem 1rem',
                       borderRadius: '10px',
                       border: isSelected ? `1.5px solid ${colors.purple}` : `1px solid ${colors.panelBorder}`,
@@ -435,6 +590,21 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                       boxShadow: isSelected ? '0 0 0 4px rgba(168, 85, 247, 0.12)' : 'none',
                     }}
                   >
+                    <div
+                      style={{
+                        flexShrink: 0,
+                        width: '34px',
+                        height: '34px',
+                        borderRadius: '9px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: isSelected ? gradient : 'rgba(255, 255, 255, 0.06)',
+                        transition: 'background 0.2s ease',
+                      }}
+                    >
+                      <TmplIcon size={18} color={isSelected ? '#fff' : colors.textLabel} />
+                    </div>
                     <div
                       style={{
                         fontWeight: 700,
@@ -450,7 +620,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
             </div>
 
             {/* STABLE INFO BOX WITH FIXED MIN-HEIGHT */}
-            {(hoveredTemplate || availableTemplates.find((t) => t.title === portfolioData.selectedTemplate)) && (
+            {displayTmpl && (
               <div
                 style={{
                   marginTop: '1rem',
@@ -465,51 +635,52 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                   boxSizing: 'border-box',
                 }}
               >
-                {(() => {
-                  const displayTmpl =
-                    hoveredTemplate || availableTemplates.find((t) => t.title === portfolioData.selectedTemplate);
-                  return (
-                    <>
-                      <div
-                        style={{
-                          fontSize: '0.9rem',
-                          fontWeight: 700,
-                          marginBottom: '0.35rem',
-                          color: '#c4b5fd',
-                        }}
-                      >
-                        {displayTmpl.placeholderTitle}
-                      </div>
-                      <p
-                        style={{
-                          fontSize: '0.83rem',
-                          color: colors.textHelper,
-                          marginBottom: '0.85rem',
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {displayTmpl.description}
-                      </p>
-                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                        {displayTmpl.tags.map((tag, tIdx) => (
-                          <span
-                            key={tIdx}
-                            style={{
-                              fontSize: '0.72rem',
-                              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                              border: `1px solid ${colors.panelBorder}`,
-                              color: colors.textLabel,
-                              padding: '3px 8px',
-                              borderRadius: '999px',
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </>
-                  );
-                })()}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: gradient,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <displayTmpl.icon size={16} color="#fff" />
+                  </div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#c4b5fd' }}>
+                    {displayTmpl.placeholderTitle}
+                  </div>
+                </div>
+                <p
+                  style={{
+                    fontSize: '0.83rem',
+                    color: colors.textHelper,
+                    marginBottom: '0.85rem',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {displayTmpl.description}
+                </p>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  {displayTmpl.tags.map((tag, tIdx) => (
+                    <span
+                      key={tIdx}
+                      style={{
+                        fontSize: '0.72rem',
+                        backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                        border: `1px solid ${colors.panelBorder}`,
+                        color: colors.textLabel,
+                        padding: '3px 8px',
+                        borderRadius: '999px',
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -517,14 +688,15 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 
         {/* RIGHT PANE: Live Preview */}
         <div
+          className={`pb-pane-right${mobileView === 'form' ? ' pb-hide-mobile' : ''}`}
           style={{
             flex: 1.5,
             padding: '2rem',
             backgroundColor: colors.bgDeep,
             borderLeft: `1px solid ${colors.panelBorder}`,
             boxSizing: 'border-box',
-            display: 'flex',         // <-- Added to control internal height
-            flexDirection: 'column', // <-- Added to stack header and preview
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           <div
@@ -535,7 +707,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
               alignItems: 'center',
               gap: '0.75rem',
               marginBottom: '1.25rem',
-              flexShrink: 0, // <-- Prevents the header from shrinking when content grows
+              flexShrink: 0,
             }}
           >
             <h2
@@ -567,12 +739,12 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           {/* DYNAMIC TEMPLATE RENDERING ENGINE */}
           <div
             id="portfolio-preview"
-            className="pb-dark-scroll" // <-- Moved the custom scrollbar class here
+            className="pb-dark-scroll"
             style={{
               width: '100%',
-              flex: 1, // <-- Forces the preview box to fill all remaining height
+              flex: 1,
               borderRadius: '16px',
-              overflowY: 'auto', // <-- Changed from 'hidden' so the template can scroll
+              overflowY: 'auto',
               overflowX: 'hidden',
               border: `1px solid ${colors.panelBorder}`,
             }}
@@ -626,6 +798,8 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 9999,
+            padding: '1rem',
+            boxSizing: 'border-box',
           }}
         >
           <div

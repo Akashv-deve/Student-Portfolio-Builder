@@ -6,6 +6,81 @@ import { useNavigate } from 'react-router-dom';
  * Premium SaaS landing page for "PortfolioBuilder".
  * 100% inline styles. Plug-and-play — drop directly into your router.
  */
+// ---------- per-template minimalist SVG icons ----------
+// Distinct, domain-matched shapes — shared with the Dashboard's template
+// selector so the same visual language carries through the whole app.
+const iconBaseStyle = (color) => ({ color, display: 'block' });
+
+function IconSoftwareEngineer({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <path d="M9 6L3 12L9 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M15 6L21 12L15 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconFullStack({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <path d="M12 3L3 8L12 13L21 8L12 3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M3 12L12 17L21 12" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M3 16L12 21L21 16" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconDataAnalyst({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <line x1="4" y1="21" x2="20" y2="21" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <rect x="5" y="13" width="3.2" height="8" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="10.4" y="8" width="3.2" height="13" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="15.8" y="4" width="3.2" height="17" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function IconEmbeddedSystems({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="9" y1="2" x2="9" y2="7" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="15" y1="2" x2="15" y2="7" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="9" y1="17" x2="9" y2="22" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="15" y1="17" x2="15" y2="22" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="2" y1="9" x2="7" y2="9" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="2" y1="15" x2="7" y2="15" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="17" y1="9" x2="22" y2="9" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="17" y1="15" x2="22" y2="15" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function IconFrontendDeveloper({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" strokeWidth="1.7" />
+      <line x1="9" y1="9" x2="9" y2="20" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+function IconUIUXDesigner({ size = 20, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={iconBaseStyle(color)}>
+      <path
+        d="M4 20L9.5 18.5L18 10C18.8 9.2 18.8 7.9 18 7.1L16.9 6C16.1 5.2 14.8 5.2 14 6L5.5 14.5L4 20Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <line x1="13" y1="7" x2="17" y2="11" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
 export default function LandingPage() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -95,12 +170,12 @@ export default function LandingPage() {
   ];
 
   const templates = [
-    { name: 'Software Engineer', desc: 'Dark terminal, matrix-green accents.', tag: 'Terminal' },
-    { name: 'Full Stack', desc: 'Modern SaaS gradients, alternating layout.', tag: 'SaaS' },
-    { name: 'Data Analyst', desc: 'Clean dashboard, case-study cards.', tag: 'Dashboard' },
-    { name: 'Embedded Systems', desc: 'Blueprint schematic, datasheet grid.', tag: 'Hardware' },
-    { name: 'Frontend Developer', desc: 'Vibrant bento-box, punchy gradients.', tag: 'Bento' },
-    { name: 'UI/UX Designer', desc: 'Cinematic minimalism, editorial type.', tag: 'Minimal' },
+    { name: 'Software Engineer', desc: 'Dark terminal, matrix-green accents.', tag: 'Terminal', icon: IconSoftwareEngineer },
+    { name: 'Full Stack', desc: 'Modern SaaS gradients, alternating layout.', tag: 'SaaS', icon: IconFullStack },
+    { name: 'Data Analyst', desc: 'Clean dashboard, case-study cards.', tag: 'Dashboard', icon: IconDataAnalyst },
+    { name: 'Embedded Systems', desc: 'Blueprint schematic, datasheet grid.', tag: 'Hardware', icon: IconEmbeddedSystems },
+    { name: 'Frontend Developer', desc: 'Vibrant bento-box, punchy gradients.', tag: 'Bento', icon: IconFrontendDeveloper },
+    { name: 'UI/UX Designer', desc: 'Cinematic minimalism, editorial type.', tag: 'Minimal', icon: IconUIUXDesigner },
   ];
 
   const features = [
@@ -593,10 +668,14 @@ export default function LandingPage() {
                       borderRadius: '10px',
                       background: gradient,
                       opacity: isHovered ? 1 : 0.85,
-                      display: 'inline-block',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       transition: 'opacity 0.2s ease',
                     }}
-                  />
+                  >
+                    <tpl.icon size={19} color="#fff" />
+                  </span>
                   <span
                     style={{
                       fontSize: '0.72rem',
