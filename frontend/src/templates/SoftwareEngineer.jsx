@@ -181,6 +181,22 @@ export default function SoftwareEngineer({ data }) {
           >
             <span style={{ color: colors.accent }}>$</span> whoami
           </p>
+          {/* 👇 INJECT THE AVATAR HERE */}
+        {data.personal?.avatar && (
+          <img
+            src={data.personal.avatar}
+            alt={`${data.personal?.name || 'Developer'} Profile`}
+            style={{
+              width: '120px',
+              height: '120px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '2px solid #4ade80', // Matrix green border to match the terminal vibe
+              marginBottom: '1.5rem',
+              display: 'block'
+            }}
+          />
+        )}
           <h1
             style={{
               fontFamily: monoFont,
@@ -361,6 +377,21 @@ export default function SoftwareEngineer({ data }) {
                   gap: '0.75rem',
                 }}
               >
+                {/* 👇 INJECT THE PROJECT IMAGE HERE */}
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                      border: `1px solid ${colors.border}`,
+                      marginBottom: '0.5rem'
+                    }}
+                  />
+                )}
                 <div
                   style={{
                     display: 'flex',
