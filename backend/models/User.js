@@ -22,6 +22,10 @@ const UserSchema = new Schema(
       type: String,
       unique: true,
       sparse: true, // Allows multiple null values for non-GitHub users
+    },
+    isPro: { 
+      type: Boolean, 
+      default: false 
     }
   },
   {

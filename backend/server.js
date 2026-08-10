@@ -7,6 +7,8 @@ const authRoutes = require('./routes/auth'); // Import our new model
 const authMiddleware = require('./middleware/authMiddleware');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 
 const app = express();
 
@@ -264,6 +266,56 @@ app.get('/api/portfolio/:slug', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
+// POST Route: Create a Razorpay Order (SECURED)
+app.post('/api/payment/create-order', authMiddleware, async (req, res) => {
+  try {
+    const razorpayInstance = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+
+    const options = {
+      amount: 49900, // ₹499 (Amount is processed in paise, so multiply by 100)
+      currency: "INR",
+      receipt: `receipt_order_${req.user.id}`
+    };
+
+    const order = await razorpayInstance.orders.create(options);
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Order creation error:", error);
+    res.status(500).json({ message: "Failed to create payment order" });
+  }
+});
+
+// POST Route: Verify Payment & Upgrade User (SECURED)
+const User = require('./models/User'); // Ensure User model is required
+
+app.post('/api/payment/verify', authMiddleware, async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    
+    // Create the expected signature to verify it's not a fake request
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest('hex');
+
+    if (expectedSignature === razorpay_signature) {
+      // Securely upgrade the user in the database
+      await User.findByIdAndUpdate(req.user.id, { isPro: true });
+      res.status(200).json({ success: true, message: "Payment verified. Upgraded to Pro!" });
+    } else {
+      res.status(400).json({ success: false, message: "Invalid payment signature" });
+    }
+  } catch (error) {
+    console.error("Verification error:", error);
+    res.status(500).json({ message: "Error verifying payment" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
