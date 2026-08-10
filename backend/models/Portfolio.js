@@ -9,10 +9,12 @@ const PortfolioSchema = new mongoose.Schema({
     fullName: String,
     role: String,
     bio: String,
+    avatar: { type: String, default: '' },
   },
   projects: [{
     title: String,
     description: String,
+    image: { type: String, default: '' },
     techStack: [String] // Added this just in case!
   }],
   education: [{

@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const Portfolio = require('./models/Portfolio');
 const authRoutes = require('./routes/auth'); // Import our new model
 const authMiddleware = require('./middleware/authMiddleware');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
 
 const app = express();
 
@@ -12,6 +14,16 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 app.use(cors());
 app.use(express.json());
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Set up Multer to store files in memory temporarily
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // 👈 2. MOUNT THE AUTH ROUTES
 app.use('/api/auth', authRoutes);
@@ -65,6 +77,32 @@ const normalizePortfolioPayload = (body = {}) => {
     template: template || "Software Engineer Portfolio"
   };
 };
+
+// --- MEDIA UPLOAD ROUTE ---
+// POST Route: Upload an image to Cloudinary (SECURED)
+app.post('/api/upload', authMiddleware, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image provided.' });
+    }
+
+    // Convert the memory buffer into a Base64 string for Cloudinary
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+
+    // Upload to a specific folder to keep your Cloudinary dashboard clean
+    const result = await cloudinary.uploader.upload(dataURI, {
+      resource_type: 'auto',
+      folder: 'portfolio_builder', 
+    });
+
+    // Return the secure URL to the frontend
+    res.status(200).json({ url: result.secure_url });
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    res.status(500).json({ message: 'Server error during image upload', error: error.message });
+  }
+});
 
 // POST Route: Save the portfolio (SECURED)
 app.post('/api/portfolio', authMiddleware, async (req, res) => {
