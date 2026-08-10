@@ -144,6 +144,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           setPortfolioData(prevData => ({
             ...prevData,
             slug: dbData.userSlug || '',
+            views: dbData.views || 0,
             selectedTemplate: dbData.template || 'Software Engineer Portfolio',
             personal: {
               name: dbData.personalInfo?.fullName || '',
@@ -294,6 +295,27 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
     } finally {
       // 👇 STOP THE LOADING STATE
       setIsPublishing(false);
+    }
+  };
+
+  const handleResetViews = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    
+    // Add a quick confirmation so they don't accidentally wipe their stats
+    if (!window.confirm("Are you sure you want to reset your view count to 0?")) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/portfolio/me/views/reset`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        setPortfolioData({ ...portfolioData, views: 0 });
+      }
+    } catch (error) {
+      console.error('Failed to reset views:', error);
     }
   };
 
@@ -545,6 +567,55 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           >
             Builder Controls
           </h2>
+          {/* 🚀 PREMIUM ANALYTICS WIDGET */}
+          <div style={{
+            marginBottom: '2rem',
+            padding: '1.5rem',
+            backgroundColor: colors.panel,
+            borderRadius: '16px',
+            border: `1px solid ${colors.panelBorder}`,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            boxShadow: '0 8px 24px -12px rgba(0, 0, 0, 0.5)'
+          }}>
+            <div>
+              <p style={{ margin: 0, fontSize: '0.85rem', color: colors.textLabel, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Live Traffic
+              </p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+                <h3 style={{ margin: 0, fontSize: '2.2rem', color: colors.textWhite, fontWeight: 900, letterSpacing: '-0.02em' }}>
+                  {portfolioData.views || 0}
+                </h3>
+                <span style={{ fontSize: '0.9rem', color: colors.textHelper, fontWeight: 600 }}>views</span>
+              </div>
+            </div>
+            <button 
+              onClick={handleResetViews}
+              style={{
+                padding: '0.6rem 1.1rem',
+                backgroundColor: 'rgba(239, 68, 68, 0.12)',
+                color: '#fca5a5',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                borderRadius: '999px',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                fontFamily: sans,
+                transition: 'all 0.2s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = colors.danger;
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.12)';
+                e.currentTarget.style.color = '#fca5a5';
+              }}
+            >
+              Reset Stats
+            </button>
+          </div>
 
           {/* INJECTED MODULAR FORM COMPONENT */}
           <BuilderForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} />

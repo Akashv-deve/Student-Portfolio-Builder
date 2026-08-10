@@ -223,10 +223,35 @@ app.get('/api/portfolio/me', authMiddleware, async (req, res) => {
   }
 });
 
-// GET Route: Fetch a portfolio by its slug
+// PUT Route: Reset portfolio views to 0 (SECURED)
+app.put('/api/portfolio/me/views/reset', authMiddleware, async (req, res) => {
+  try {
+    const updatedPortfolio = await Portfolio.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: { views: 0 } },
+      { returnDocument: 'after' }
+    );
+
+    if (!updatedPortfolio) {
+      return res.status(404).json({ message: 'Portfolio not found.' });
+    }
+
+    res.status(200).json({ message: 'Views reset to 0', views: updatedPortfolio.views });
+  } catch (error) {
+    console.error('Error resetting views:', error);
+    res.status(500).json({ message: 'Server error resetting views' });
+  }
+});
+
+// GET Route: Fetch a portfolio by its slug (AND INCREMENT VIEWS)
 app.get('/api/portfolio/:slug', async (req, res) => {
   try {
-    const portfolio = await Portfolio.findOne({ userSlug: req.params.slug });
+    // 燥 FIXED: Using findOneAndUpdate with $inc to instantly add 1 to the view count
+    const portfolio = await Portfolio.findOneAndUpdate(
+      { userSlug: req.params.slug },
+      { $inc: { views: 1 } },
+      { returnDocument: 'after' } 
+    );
     
     if (!portfolio) {
       return res.status(404).json({ message: 'Portfolio not found' });

@@ -27,6 +27,7 @@ const PortfolioSchema = new mongoose.Schema({
     type: String, 
     default: "Software Engineer Portfolio" 
   },
+  views: { type: Number, default: 0 },
   // NEW FIELDS ADDED HERE:
   skills: { type: [String], default: [] },
   socials: {
