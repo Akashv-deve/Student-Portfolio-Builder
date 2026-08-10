@@ -13,6 +13,7 @@ import DataAnalyst from '../templates/DataAnalyst';
 import FullStack from '../templates/FullStack';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const PREMIUM_TEMPLATES = ['UI/UX Designer Portfolio', 'Full Stack Developer Portfolio'];
 
 // ---------- shared design tokens (matches the landing page) ----------
 const colors = {
@@ -220,7 +221,18 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
     }
   };
 
-  const handlePublish = async () => {
+  const loadRazorpaySDK = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  // 1. THIS FUNCTION HANDLES THE ACTUAL DATABASE SAVING
+  const executePublish = async () => {
     console.log('Current Slug in State:', portfolioData.slug);
 
     const token = localStorage.getItem('token');
@@ -235,7 +247,6 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
       return;
     }
 
-    // 👇 START THE LOADING STATE
     setIsPublishing(true);
 
     try {
@@ -293,12 +304,77 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
       console.error('Publishing error:', error);
       alert('Failed to publish. Check your console, bro.');
     } finally {
-      // 👇 STOP THE LOADING STATE
       setIsPublishing(false);
     }
   };
 
+  // 2. THIS FUNCTION INTERCEPTS PREMIUM TEMPLATES AND TRIGGERS RAZORPAY SECURELY
+  const handlePublish = async () => {
+    const isPremium = PREMIUM_TEMPLATES.includes(portfolioData.selectedTemplate);
+    const isPro = localStorage.getItem('isPro') === 'true';
+
+    // If it's a premium template and user hasn't paid, launch Razorpay
+    if (isPremium && !isPro) {
+      const sdkLoaded = await loadRazorpaySDK();
+      if (!sdkLoaded) {
+        alert("Payment gateway failed to load. Please check your connection.");
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+
+      try {
+        const orderRes = await fetch(`${API_BASE_URL}/api/payment/create-order`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const orderData = await orderRes.json();
+
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: "PortfolioBuilder Pro",
+          description: "Unlock Premium Templates",
+          order_id: orderData.id,
+          theme: { color: "#a855f7" },
+          handler: async function (response) {
+            const verifyRes = await fetch(`${API_BASE_URL}/api/payment/verify`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+              },
+              body: JSON.stringify(response)
+            });
+            
+            if (verifyRes.ok) {
+              localStorage.setItem('isPro', 'true');
+              alert("Payment successful! You are now a Pro user. Publishing your portfolio...");
+              executePublish();
+            } else {
+              alert("Payment verification failed.");
+            }
+          },
+        };
+        
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+        return;
+
+      } catch (err) {
+        console.error("Checkout error:", err);
+        alert("Failed to initiate checkout.");
+        return;
+      }
+    }
+
+    // Free template or already Pro -> publish immediately
+    executePublish();
+  };
+
   const handleResetViews = async () => {
+
     const token = localStorage.getItem('token');
     if (!token) return;
     
@@ -783,9 +859,26 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                         fontWeight: 700,
                         fontSize: '0.92rem',
                         color: isSelected ? '#e9d5ff' : colors.textWhite,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%'
                       }}
                     >
-                      {tmpl.title}
+                      <span>{tmpl.title}</span>
+                      {PREMIUM_TEMPLATES.includes(tmpl.title) && (
+                        <span style={{ 
+                          fontSize: '0.7rem', 
+                          fontWeight: 800, 
+                          color: '#f59e0b', 
+                          backgroundColor: 'rgba(245, 158, 11, 0.15)', 
+                          border: '1px solid rgba(245, 158, 11, 0.3)',
+                          padding: '2px 8px', 
+                          borderRadius: '999px' 
+                        }}>
+                          👑 Premium
+                        </span>
+                      )}
                     </div>
                   </div>
                 );
