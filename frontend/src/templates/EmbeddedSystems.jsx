@@ -105,6 +105,14 @@ export default function EmbeddedSystems({ data, portfolioData }) {
       <div style={{ ...wrapper, paddingTop: 'clamp(2.5rem, 6vh, 4rem)', paddingBottom: 'clamp(2.5rem, 6vh, 4rem)' }}>
         <div style={{ ...panelStyle, padding: 'clamp(1.75rem, 4vw, 3rem)' }}>
           {cornerMarks(colors.cyan)}
+          {/* 👇 INJECT AVATAR (Styled like a hardware component) */}
+          {personal.avatar && (
+            <img
+              src={personal.avatar}
+              alt="Unit Avatar"
+              style={{ width: '90px', height: '90px', borderRadius: '2px', objectFit: 'cover', border: `1px solid ${colors.cyan}`, marginBottom: '1.5rem', filter: 'grayscale(100%) contrast(1.2)' }} 
+            />
+          )}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <span style={tagStyle}>PART_NO: {name.toUpperCase().replace(/\s+/g, '_')}</span>
             <span style={tagStyle}>PKG: PORTFOLIO_V1</span>
@@ -170,6 +178,14 @@ export default function EmbeddedSystems({ data, portfolioData }) {
               >
                 {isHovered && cornerMarks(colors.cyan)}
                 <span style={{ fontFamily: mono, fontSize: '0.7rem', color: colors.cyanDim }}>MOD_{String(i + 1).padStart(2, '0')}</span>
+                {/* 👇 INJECT PROJECT IMAGE (Styled like a blueprint schematic) */}
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt="Module Diagram"
+                    style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '2px', border: `1px solid ${colors.line}`, marginBottom: '1rem', filter: 'grayscale(100%) sepia(20%) hue-rotate(180deg)', opacity: 0.85 }}
+                  />
+                )}
                 <h3 style={{ fontFamily: mono, fontSize: '1.3rem', color: colors.white, margin: 0, wordBreak: 'break-word' }}>
                   {project.title || 'UNTITLED_MODULE'}
                 </h3>

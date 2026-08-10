@@ -110,6 +110,14 @@ export default function FullStack({ data, portfolioData }) {
 
       {/* HERO */}
       <div style={{ ...wrapper, paddingTop: 'clamp(3rem, 8vh, 5.5rem)', paddingBottom: 'clamp(3rem, 8vh, 5.5rem)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* 👇 INJECT AVATAR (Wrapped in a gradient border) */}
+        {personal.avatar && (
+          <img
+            src={personal.avatar}
+            alt={name}
+            style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', padding: '4px', background: gradient, marginBottom: '1.5rem' }}
+          />
+        )}
         <span style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.45rem 1rem', borderRadius: '999px', border: `1px solid ${colors.border}`, color: colors.textSecondary, marginBottom: '1.75rem' }}>
           Frontend &nbsp;•&nbsp; Backend &nbsp;•&nbsp; Full Stack
         </span>
@@ -178,6 +186,14 @@ export default function FullStack({ data, portfolioData }) {
                 <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.08em', ...gradientText }}>
                   PROJECT {String(i + 1).padStart(2, '0')}
                 </span>
+                {/* 👇 INJECT PROJECT IMAGE */}
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: '12px', marginBottom: '1.5rem', border: `1px solid ${colors.border}` }}
+                  />
+                )}
                 <h3 style={{ fontSize: 'clamp(1.4rem, 2.6vw, 1.8rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.01em', wordBreak: 'break-word' }}>
                   {project.title || 'Untitled Project'}
                 </h3>

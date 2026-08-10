@@ -55,6 +55,14 @@ export default function UIUXDesigner({ data, portfolioData }) {
 
       {/* CINEMATIC HERO */}
       <header style={{ padding: '15vh 5vw 10vh 5vw' }}>
+        {/* 👇 INJECT AVATAR */}
+        {personal.avatar && (
+          <img
+            src={personal.avatar}
+            alt="Portrait"
+            style={{ width: '140px', height: '140px', borderRadius: '50%', objectFit: 'cover', marginBottom: '2rem', filter: 'grayscale(20%)' }}
+          />
+        )}
         <h1 style={{ 
           fontFamily: fonts.serif, 
           fontSize: 'clamp(3rem, 10vw, 8rem)', 
@@ -113,6 +121,14 @@ export default function UIUXDesigner({ data, portfolioData }) {
 
                 {/* Project Typography Column */}
                 <div style={{ flex: '2 1 500px' }}>
+                  {/* 👇 INJECT PROJECT IMAGE */}
+                  {project.image && (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      style={{ width: '100%', maxHeight: '450px', objectFit: 'cover', marginBottom: '2rem' }}
+                    />
+                  )}
                   <h3 style={{ 
                     fontFamily: fonts.serif, 
                     fontSize: 'clamp(2rem, 4vw, 3.5rem)', 

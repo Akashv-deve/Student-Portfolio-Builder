@@ -84,6 +84,14 @@ export default function DataAnalyst({ data, portfolioData }) {
         <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6366f1', display: 'block', marginBottom: '0.75rem' }}>
           Portfolio Overview
         </span>
+        {/* 👇 INJECT AVATAR */}
+        {personal.avatar && (
+          <img
+            src={personal.avatar}
+            alt={`${name} Profile`}
+            style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', marginBottom: '1.5rem', border: `2px solid ${colors.border}` }}
+          />
+        )}
         <h1 style={{ fontSize: 'clamp(2rem, 4.5vw, 3.2rem)', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 1rem 0', lineHeight: 1.1, maxWidth: '20ch' }}>
           {bio ? `Hi, I'm ${name}.` : name}
         </h1>
@@ -157,6 +165,14 @@ export default function DataAnalyst({ data, portfolioData }) {
                 <span style={{ fontSize: '0.72rem', fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                   Case Study {String(i + 1).padStart(2, '0')}
                 </span>
+                {/* 👇 INJECT PROJECT IMAGE */}
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem', border: `1px solid ${colors.border}` }}
+                  />
+                )}
                 <h3 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0, letterSpacing: '-0.01em', color: colors.textPrimary }}>
                   {project.title || 'Untitled Case Study'}
                 </h3>

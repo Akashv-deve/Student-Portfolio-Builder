@@ -138,6 +138,14 @@ export default function FrontendDeveloper({ data }) {
                 filter: 'blur(10px)',
               }}
             />
+            {/* 👇 INJECT AVATAR */}
+            {personal.avatar && (
+              <img
+                src={personal.avatar}
+                alt={name}
+                style={{ width: '110px', height: '110px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #fff', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', marginBottom: '1.5rem', position: 'relative' }}
+              />
+            )}
             <span style={eyebrowStyle}>Welcome to my portfolio</span>
             <h1
               style={{
@@ -311,6 +319,14 @@ export default function FrontendDeveloper({ data }) {
                     : '0 4px 12px rgba(15,23,42,0.05)',
                 }}
               >
+                {/* 👇 INJECT PROJECT IMAGE */}
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '16px', marginBottom: '0.5rem' }}
+                  />
+                )}
                 <div
                   style={{
                     width: '46px',
