@@ -163,5 +163,76 @@ router.post('/login', async (req, res) => {
     });
   }
 });
+/**
+ * POST /github
+ * Exchanges a GitHub OAuth code for a JWT.
+ */
+router.post('/github', async (req, res) => {
+  const { code } = req.body;
+  if (!code) {
+    return res.status(400).json({ success: false, message: 'No authorization code provided.' });
+  }
+
+  try {
+    // 1. Exchange the code for a GitHub Access Token
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code,
+      }),
+    });
+
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+
+    if (!accessToken) {
+      throw new Error('Failed to fetch access token from GitHub.');
+    }
+
+    // 2. Fetch the user's GitHub profile
+    const userResponse = await fetch('https://api.github.com/user', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const githubUser = await userResponse.json();
+
+    // 3. Fetch the user's primary email (many GitHub users hide their public email)
+    const emailResponse = await fetch('https://api.github.com/user/emails', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const emails = await emailResponse.json();
+    const primaryEmailObj = emails.find((e) => e.primary) || emails[0];
+    const email = primaryEmailObj.email.toLowerCase();
+
+    // 4. Find existing user, or create a new one!
+    let user = await User.findOne({ $or: [{ githubId: githubUser.id.toString() }, { email }] });
+    
+    if (!user) {
+      // New user from GitHub!
+      user = await User.create({ email, githubId: githubUser.id.toString() });
+    } else if (!user.githubId) {
+      // Existing email/password user logging in with GitHub for the first time
+      user.githubId = githubUser.id.toString();
+      await user.save();
+    }
+
+    // 5. Generate your standard app JWT
+    const token = signToken(user);
+
+    return res.status(200).json({
+      success: true,
+      token,
+      user: { id: user._id, email: user.email },
+    });
+  } catch (error) {
+    console.error('GitHub Auth Error:', error);
+    return res.status(500).json({ success: false, message: 'GitHub authentication failed.' });
+  }
+});
 
 module.exports = router;

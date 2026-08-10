@@ -12,17 +12,20 @@ const UserSchema = new Schema(
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
     },
+    // 👇 Password is NO LONGER required (for GitHub users)
     password: {
       type: String,
-      required: [true, 'Password is required'],
-      // Never returned by default queries — prevents accidental leakage
-      // of the hash in API responses. Use .select('+password') when you
-      // explicitly need it (e.g. during login).
       select: false,
     },
+    // 👇 Added field to track GitHub logins
+    githubId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows multiple null values for non-GitHub users
+    }
   },
   {
-    timestamps: true, // adds createdAt / updatedAt
+    timestamps: true,
   }
 );
 
