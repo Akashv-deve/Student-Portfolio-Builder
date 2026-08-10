@@ -61,12 +61,13 @@ const normalizePortfolioPayload = (body = {}) => {
   const safePersonalInfo = {
     fullName: personalInfo?.fullName || '',
     role: personalInfo?.role || '',
-    bio: personalInfo?.bio || ''
+    bio: personalInfo?.bio || '',
+    avatar: personalInfo?.avatar || ''
   };
 
   return {
     personalInfo: safePersonalInfo,
-    projects: Array.isArray(projects) ? projects : [],
+    projects: Array.isArray(projects) ? projects : [], // Project images are passed inherently here
     education: Array.isArray(education) ? education : [],
     skills: Array.isArray(skills) ? skills.filter(Boolean) : [],
     socials: socials && typeof socials === 'object' ? {

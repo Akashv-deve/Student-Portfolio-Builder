@@ -1,11 +1,4 @@
-import React from 'react';
-
-/**
- * BuilderForm.jsx
- * Premium dark-mode form controls for the PortfolioBuilder dashboard.
- * 100% inline styles (one narrow exception: a <style> tag purely for
- * ::-webkit-scrollbar cosmetics, which cannot be targeted inline).
- */
+import React, { useState } from 'react';
 
 // ---------- shared design tokens ----------
 const colors = {
@@ -23,7 +16,6 @@ const colors = {
 };
 
 const sans = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-const gradient = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
 
 const styles = {
   container: {
@@ -68,8 +60,6 @@ const styles = {
   },
 };
 
-// Base style for every input/textarea. Focus visuals are applied via
-// onFocus/onBlur since inline styles have no :focus pseudo-class.
 const inputBaseStyle = {
   width: '100%',
   padding: '0.75rem 1rem',
@@ -152,6 +142,44 @@ function AddButton({ children, ...props }) {
 }
 
 const BuilderForm = ({ portfolioData, setPortfolioData }) => {
+  // Upload UI tracking states
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingProjects, setUploadingProjects] = useState({});
+
+  // Unified File Upload Handler to Cloudinary
+  const handleImageUpload = async (file, onUploadSuccess, setUploadingStatus) => {
+    if (!file) return;
+    setUploadingStatus(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const token = localStorage.getItem('token');
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+      const response = await fetch(`${API_BASE_URL}/api/upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        onUploadSuccess(data.url);
+      } else {
+        alert(`Upload failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('An error occurred during upload.');
+    } finally {
+      setUploadingStatus(false);
+    }
+  };
+
   const handleProjectChange = (index, field, value) => {
     const updated = [...portfolioData.projects];
     updated[index][field] = value;
@@ -166,8 +194,6 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
 
   return (
     <div style={styles.container}>
-      {/* Exception: ::-webkit-scrollbar cannot be targeted via inline
-          style objects, so this narrow cosmetic rule is injected here. */}
       <style>{`
         .pb-form-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
         .pb-form-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -183,6 +209,33 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
       {/* Personal Info */}
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Personal Information</h3>
+        
+        {/* NEW: Avatar Upload UI */}
+        <div style={styles.inputGroup}>
+          <label style={styles.inputLabel}>Profile Picture (Avatar)</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+            {portfolioData.personal.avatar && (
+              <img 
+                src={portfolioData.personal.avatar} 
+                alt="Avatar" 
+                style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${colors.panelBorder}` }} 
+              />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              disabled={uploadingAvatar}
+              onChange={(e) => handleImageUpload(
+                e.target.files[0],
+                (url) => setPortfolioData({ ...portfolioData, personal: { ...portfolioData.personal, avatar: url } }),
+                setUploadingAvatar
+              )}
+              style={{ color: colors.textHelper, fontSize: '0.85rem' }}
+            />
+            {uploadingAvatar && <span style={{ color: colors.focusPurple, fontSize: '0.85rem', fontWeight: 'bold' }}>⏳ Uploading...</span>}
+          </div>
+        </div>
+
         <div style={styles.inputGroup}>
           <label style={styles.inputLabel}>Full Name</label>
           <PremiumInput
@@ -226,13 +279,39 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
         </div>
       </div>
 
-
       {/* Projects */}
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Projects</h3>
         {portfolioData.projects &&
           portfolioData.projects.map((project, index) => (
             <div key={project.id} style={styles.itemCard}>
+              
+              {/* NEW: Project Thumbnail Upload UI */}
+              <div style={styles.inputGroup}>
+                <label style={styles.inputLabel}>Project Thumbnail</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                  {project.image && (
+                    <img 
+                      src={project.image} 
+                      alt="Project Thumbnail" 
+                      style={{ width: '80px', height: '45px', borderRadius: '6px', objectFit: 'cover', border: `1px solid ${colors.panelBorder}` }} 
+                    />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingProjects[index]}
+                    onChange={(e) => handleImageUpload(
+                      e.target.files[0],
+                      (url) => handleProjectChange(index, 'image', url),
+                      (status) => setUploadingProjects(prev => ({ ...prev, [index]: status }))
+                    )}
+                    style={{ color: colors.textHelper, fontSize: '0.85rem' }}
+                  />
+                  {uploadingProjects[index] && <span style={{ color: colors.focusPurple, fontSize: '0.85rem', fontWeight: 'bold' }}>⏳ Uploading...</span>}
+                </div>
+              </div>
+
               <div style={styles.inputGroup}>
                 <label style={styles.inputLabel}>Project Title</label>
                 <PremiumInput
@@ -257,7 +336,7 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
               ...portfolioData,
               projects: [
                 ...(portfolioData.projects || []),
-                { id: Date.now(), title: 'New Project', description: '', techStack: [] },
+                { id: Date.now(), title: 'New Project', description: '', techStack: [], image: '' },
               ],
             });
           }}

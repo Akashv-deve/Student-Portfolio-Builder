@@ -214,6 +214,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           fullName: portfolioData.personal.name,
           role: portfolioData.personal.role,
           bio: portfolioData.personal.bio,
+          avatar: portfolioData.personal.avatar || '',
         },
         projects: Array.isArray(portfolioData.projects) ? portfolioData.projects : [],
         education: Array.isArray(portfolioData.education) ? portfolioData.education : [],
