@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { useNavigate } from 'react-router-dom';
 import BuilderForm from '../components/BuilderForm';
+import React, { useState, useEffect } from 'react';
 
 // ALL 6 TEMPLATES IMPORTED
 import SoftwareEngineer from '../templates/SoftwareEngineer';
@@ -125,6 +125,46 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
 
   // GRAB THE USER EMAIL
   const userEmail = localStorage.getItem('userEmail') || 'Guest';
+
+  // 👇 FETCH SAVED DATA ON LOAD
+  useEffect(() => {
+    const fetchMyPortfolio = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/portfolio/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const dbData = await response.json();
+          
+          // Overwrite the App.jsx defaults with the user's actual saved data
+          setPortfolioData(prevData => ({
+            ...prevData,
+            slug: dbData.userSlug || '',
+            selectedTemplate: dbData.template || 'Software Engineer Portfolio',
+            personal: {
+              name: dbData.personalInfo?.fullName || '',
+              role: dbData.personalInfo?.role || '',
+              bio: dbData.personalInfo?.bio || '',
+              avatar: dbData.personalInfo?.avatar || ''
+            },
+            // Fallback to the default arrays if the database arrays are empty
+            projects: Array.isArray(dbData.projects) && dbData.projects.length > 0 ? dbData.projects : prevData.projects,
+            education: Array.isArray(dbData.education) && dbData.education.length > 0 ? dbData.education : prevData.education,
+            skills: Array.isArray(dbData.skills) && dbData.skills.length > 0 ? dbData.skills : prevData.skills,
+            socials: dbData.socials || prevData.socials
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch saved portfolio data:', error);
+      }
+    };
+
+    fetchMyPortfolio();
+  }, []); // The empty array ensures this only runs exactly once when the dashboard opens
 
   // LOGOUT FUNCTION
   const handleLogout = () => {

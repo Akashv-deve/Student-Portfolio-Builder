@@ -206,6 +206,23 @@ app.put('/api/portfolio/:slug', authMiddleware, async (req, res) => {
   }
 });
 
+// GET Route: Fetch the logged-in user's portfolio (SECURED)
+app.get('/api/portfolio/me', authMiddleware, async (req, res) => {
+  try {
+    const portfolio = await Portfolio.findOne({ userId: req.user.id });
+    
+    if (!portfolio) {
+      // It is completely normal for a brand new user to not have a portfolio yet
+      return res.status(404).json({ message: 'No portfolio found for this user.' });
+    }
+
+    res.status(200).json(portfolio);
+  } catch (error) {
+    console.error('Error fetching user portfolio:', error);
+    res.status(500).json({ message: 'Server error fetching portfolio', error: error.message });
+  }
+});
+
 // GET Route: Fetch a portfolio by its slug
 app.get('/api/portfolio/:slug', async (req, res) => {
   try {
