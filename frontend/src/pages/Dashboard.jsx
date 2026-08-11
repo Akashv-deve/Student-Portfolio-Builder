@@ -577,8 +577,12 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           ← Back to Home
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div className="pb-topnav-email" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        {/* --- RIGHT SIDE NAVIGATION --- */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          
+          {/* USER INFO & PRO BADGE */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {/* Green Status Dot */}
             <div
               style={{
                 width: '8px',
@@ -586,13 +590,28 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                 borderRadius: '50%',
                 backgroundColor: colors.success,
                 boxShadow: `0 0 8px ${colors.success}`,
+                flexShrink: 0
               }}
             />
-            <span style={{ fontSize: '0.88rem', color: colors.textLabel }}>
-              Logged in as: <strong style={{ color: colors.textWhite }}>{userEmail}</strong>
-            </span>
             
-            {/* 👇 CLICKABLE PRO BADGE 👇 */}
+            {/* Truncated Email */}
+            <strong 
+              title={userEmail}
+              style={{ 
+                color: colors.textWhite, 
+                fontSize: '0.85rem',
+                maxWidth: '90px', // Forces long emails to truncate on mobile
+                whiteSpace: 'nowrap', 
+                overflow: 'hidden', 
+                textOverflow: 'ellipsis', 
+                display: 'inline-block',
+                verticalAlign: 'middle'
+              }}
+            >
+              {userEmail}
+            </strong>
+            
+            {/* CLICKABLE PRO BADGE */}
             {isProUser && (
               <button
                 onClick={handleCancelPro}
@@ -601,25 +620,23 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
                   backgroundColor: 'rgba(168, 85, 247, 0.15)',
                   color: '#c084fc',
                   border: '1px solid rgba(168, 85, 247, 0.3)',
-                  padding: '2px 8px',
+                  padding: '2px 6px',
                   borderRadius: '999px',
-                  fontSize: '0.7rem',
+                  fontSize: '0.65rem',
                   fontWeight: 800,
-                  marginLeft: '0.25rem',
                   letterSpacing: '0.05em',
                   textTransform: 'uppercase',
-                  cursor: 'pointer', // 👈 Changes the mouse to a pointer hand
+                  cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  outline: 'none'
+                  outline: 'none',
+                  flexShrink: 0 // Prevents the badge from squishing
                 }}
                 onMouseOver={(e) => {
-                  // Turns a warning red on hover
                   e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.15)'; 
                   e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)';
                   e.currentTarget.style.color = '#f87171';
                 }}
                 onMouseOut={(e) => {
-                  // Returns to standard Pro purple
                   e.currentTarget.style.backgroundColor = 'rgba(168, 85, 247, 0.15)';
                   e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.3)';
                   e.currentTarget.style.color = '#c084fc';
@@ -629,19 +646,22 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
               </button>
             )}
           </div>
+
+          {/* LOGOUT BUTTON */}
           <button
             onClick={handleLogout}
             style={{
-              padding: '0.5rem 1.2rem',
+              padding: '0.4rem 1rem',
               backgroundColor: 'rgba(239, 68, 68, 0.12)',
               color: '#fca5a5',
               border: '1px solid rgba(239, 68, 68, 0.35)',
               borderRadius: '999px',
               cursor: 'pointer',
-              fontSize: '0.85rem',
+              fontSize: '0.8rem',
               fontWeight: 700,
               fontFamily: sans,
               transition: 'all 0.2s ease',
+              flexShrink: 0
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = colors.danger;
