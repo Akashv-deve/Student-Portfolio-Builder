@@ -302,7 +302,7 @@ export default function LandingPage() {
                       fontWeight: 800,
                       letterSpacing: '0.05em',
                       textTransform: 'uppercase',
-                      display: window.innerWidth < 400 ? 'none' : 'inline-block', // Hides only on tiny screens to save space
+                      display: 'inline-block',
                     }}
                   >
                     👑 Pro
