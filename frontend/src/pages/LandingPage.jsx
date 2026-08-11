@@ -85,6 +85,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const userEmail = localStorage.getItem('userEmail');
+  const isProUser = localStorage.getItem('isPro') === 'true';
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -276,59 +277,70 @@ export default function LandingPage() {
             </span>
           </div>
 
-          {/* desktop right side */}
+          {/* Responsive Right Side */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '1rem',
+              gap: '0.6rem', // Tighter gap for mobile
+              flexWrap: 'wrap', // Allows safe wrapping on extremely small phones
+              justifyContent: 'flex-end',
             }}
-            className="pb-navbar-desktop"
           >
             {token ? (
               <>
-                <span
-                  style={{
-                    fontSize: '0.85rem',
-                    color: colors.textSecondary,
-                    fontWeight: 500,
-                    maxWidth: '180px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    display: window.innerWidth < 640 ? 'none' : 'inline-block',
-                  }}
-                >
-                  {userEmail || 'Signed in'}
-                </span>
+                {/* 👑 PRO BADGE INJECTED HERE */}
+                {isProUser && (
+                  <span
+                    style={{
+                      backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                      color: '#c084fc',
+                      border: '1px solid rgba(168, 85, 247, 0.3)',
+                      padding: '3px 8px',
+                      borderRadius: '999px',
+                      fontSize: '0.65rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase',
+                      display: window.innerWidth < 400 ? 'none' : 'inline-block', // Hides only on tiny screens to save space
+                    }}
+                  >
+                    👑 Pro
+                  </span>
+                )}
+                
+                {/* SHORTENED DASHBOARD BUTTON */}
                 <button
                   onClick={() => navigate('/dashboard')}
                   style={{
-                    fontSize: '0.85rem',
+                    fontSize: '0.8rem', // Scaled down for mobile
                     fontWeight: 700,
                     color: '#fff',
                     background: gradient,
                     border: 'none',
                     borderRadius: '999px',
-                    padding: '0.6rem 1.3rem',
+                    padding: '0.5rem 1rem', // Tighter padding
                     cursor: 'pointer',
                     transition: 'opacity 0.2s ease',
+                    whiteSpace: 'nowrap'
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
                 >
-                  Go to Dashboard
+                  Dashboard
                 </button>
+                
+                {/* SCALED LOGOUT BUTTON */}
                 <button
                   onClick={handleLogout}
                   style={{
-                    fontSize: '0.85rem',
+                    fontSize: '0.8rem',
                     fontWeight: 700,
                     color: colors.textSecondary,
                     background: 'transparent',
                     border: `1px solid ${colors.border}`,
                     borderRadius: '999px',
-                    padding: '0.6rem 1.3rem',
+                    padding: '0.5rem 1rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                   }}
@@ -348,15 +360,16 @@ export default function LandingPage() {
               <button
                 onClick={() => navigate('/auth')}
                 style={{
-                  fontSize: '0.88rem',
+                  fontSize: '0.8rem',
                   fontWeight: 700,
                   color: '#fff',
                   background: gradient,
                   border: 'none',
                   borderRadius: '999px',
-                  padding: '0.65rem 1.5rem',
+                  padding: '0.5rem 1.2rem',
                   cursor: 'pointer',
                   transition: 'opacity 0.2s ease',
+                  whiteSpace: 'nowrap'
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
