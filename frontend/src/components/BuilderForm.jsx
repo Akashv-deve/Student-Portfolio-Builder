@@ -316,6 +316,7 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
                 <label style={styles.inputLabel}>Project Title</label>
                 <PremiumInput
                   type="text"
+                  placeholder="e.g. Student Management System" 
                   value={project.title}
                   onChange={(e) => handleProjectChange(index, 'title', e.target.value)}
                 />
@@ -324,6 +325,7 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
                 <label style={styles.inputLabel}>Description</label>
                 <PremiumTextarea
                   style={{ minHeight: '80px' }}
+                  placeholder="e.g. A comprehensive system for tracking student data built with React and Node.js..."
                   value={project.description}
                   onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
                 />
@@ -355,6 +357,7 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
                 <label style={styles.inputLabel}>Institution</label>
                 <PremiumInput
                   type="text"
+                  placeholder="e.g. Government College of Engineering, Bodinayakanur"
                   value={edu.institution}
                   onChange={(e) => handleEduChange(index, 'institution', e.target.value)}
                 />
@@ -364,6 +367,7 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
                   <label style={styles.inputLabel}>Degree</label>
                   <PremiumInput
                     type="text"
+                    placeholder="e.g. B.E. Computer Science and Engineering"
                     value={edu.degree}
                     onChange={(e) => handleEduChange(index, 'degree', e.target.value)}
                   />
@@ -372,6 +376,7 @@ const BuilderForm = ({ portfolioData, setPortfolioData }) => {
                   <label style={styles.inputLabel}>Score/CGPA</label>
                   <PremiumInput
                     type="text"
+                    placeholder="e.g. 8.48 CGPA"
                     value={edu.score}
                     onChange={(e) => handleEduChange(index, 'score', e.target.value)}
                   />

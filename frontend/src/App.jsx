@@ -12,35 +12,15 @@ function App() {
   
   // 2. Your state stays exactly the same so the Dashboard works perfectly
   const [portfolioData, setPortfolioData] = useState({
-    personal: { name: "Akash V", role: "", bio: "" },
+    personal: { name: "", role: "", bio: "", avatar: "" },
     selectedTemplate: "Software Engineer Portfolio",
-    projects: [
-      {
-        id: 1,
-        title: "Student Management System",
-        description: "A comprehensive system for tracking student data.",
-        techStack: ["React", "Node.js"]
-      },
-      {
-        id: 2,
-        title: "Income Prediction Model",
-        description: "Machine learning model predicting income brackets based on demographic data.",
-        techStack: ["Python", "Machine Learning"]
-      }
-    ],
-    education: [
-      {
-        id: 1,
-        institution: "Government College of Engineering, Bodinayakanur",
-        degree: "B.E. Computer Science and Engineering",
-        score: "8.48 CGPA"
-      }
-    ],
-    skills: ["React", "Node.js", "Machine Learning", "Python", "SQL"],
+    projects: [],
+    education: [],
+    skills: [],
     socials: {
-      github: "https://github.com/Akashv-deve",
-      linkedin: "https://linkedin.com/in/yourprofile",
-      email: "hello@example.com"
+      github: "",
+      linkedin: "",
+      email: ""
     }
   });
 
