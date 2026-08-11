@@ -175,6 +175,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('isPro');
     navigate('/auth');
   };
 
