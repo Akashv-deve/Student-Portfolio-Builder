@@ -179,6 +179,37 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
     navigate('/auth');
   };
 
+  const handleCancelPro = async () => {
+    // 1. The Alert Popup Confirmation
+    const confirmCancel = window.confirm("Are you sure you want to remove your Pro subscription? You will lose access to premium templates.");
+    
+    // If they click "Cancel" on the popup, stop here.
+    if (!confirmCancel) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      // 2. Call the backend to update the database
+      const response = await fetch(`${API_BASE_URL}/api/payment/cancel-pro`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        // 3. Wipe the Pro status from local memory and React state
+        localStorage.removeItem('isPro');
+        setIsProUser(false);
+        alert("Your Pro subscription has been successfully removed.");
+      } else {
+        alert("Failed to cancel subscription. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error cancelling Pro:', error);
+      alert("An error occurred. Check your connection.");
+    }
+  };
+
   const handleExport = async () => {
     // 👇 START THE LOADING STATE
     setIsExporting(true);
@@ -505,6 +536,33 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           borderBottom: `1px solid ${colors.panelBorder}`,
         }}
       >
+        {isProUser && (
+            <button
+              onClick={handleCancelPro}
+              style={{
+                padding: '0.5rem 1.2rem',
+                backgroundColor: 'rgba(245, 158, 11, 0.12)', // Warning amber color
+                color: '#fcd34d',
+                border: '1px solid rgba(245, 158, 11, 0.35)',
+                borderRadius: '999px',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                fontFamily: sans,
+                transition: 'all 0.2s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#f59e0b';
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(245, 158, 11, 0.12)';
+                e.currentTarget.style.color = '#fcd34d';
+              }}
+            >
+              Downgrade
+            </button>
+          )}
         <button
           onClick={() => navigate('/')}
           style={{

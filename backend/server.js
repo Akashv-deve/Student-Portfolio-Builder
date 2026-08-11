@@ -316,6 +316,18 @@ app.post('/api/payment/verify', authMiddleware, async (req, res) => {
   }
 });
 
+// PUT Route: Cancel Pro Subscription (SECURED)
+app.put('/api/payment/cancel-pro', authMiddleware, async (req, res) => {
+  try {
+    // Find the user and set isPro back to false
+    await User.findByIdAndUpdate(req.user.id, { isPro: false });
+    res.status(200).json({ success: true, message: "Pro subscription cancelled successfully." });
+  } catch (error) {
+    console.error("Cancel Pro error:", error);
+    res.status(500).json({ message: "Error cancelling subscription" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
