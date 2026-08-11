@@ -536,33 +536,6 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
           borderBottom: `1px solid ${colors.panelBorder}`,
         }}
       >
-        {isProUser && (
-            <button
-              onClick={handleCancelPro}
-              style={{
-                padding: '0.5rem 1.2rem',
-                backgroundColor: 'rgba(245, 158, 11, 0.12)', // Warning amber color
-                color: '#fcd34d',
-                border: '1px solid rgba(245, 158, 11, 0.35)',
-                borderRadius: '999px',
-                cursor: 'pointer',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                fontFamily: sans,
-                transition: 'all 0.2s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = '#f59e0b';
-                e.currentTarget.style.color = '#fff';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(245, 158, 11, 0.12)';
-                e.currentTarget.style.color = '#fcd34d';
-              }}
-            >
-              Downgrade
-            </button>
-          )}
         <button
           onClick={() => navigate('/')}
           style={{
@@ -604,22 +577,41 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
               Logged in as: <strong style={{ color: colors.textWhite }}>{userEmail}</strong>
             </span>
             
-            {/* 👇 INJECTED PRO BADGE 👇 */}
+            {/* 👇 CLICKABLE PRO BADGE 👇 */}
             {isProUser && (
-              <span style={{
-                backgroundColor: 'rgba(168, 85, 247, 0.15)',
-                color: '#c084fc',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
-                padding: '2px 8px',
-                borderRadius: '999px',
-                fontSize: '0.7rem',
-                fontWeight: 800,
-                marginLeft: '0.25rem',
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase'
-              }}>
+              <button
+                onClick={handleCancelPro}
+                title="Click to downgrade your Pro subscription"
+                style={{
+                  backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                  color: '#c084fc',
+                  border: '1px solid rgba(168, 85, 247, 0.3)',
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                  marginLeft: '0.25rem',
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer', // 👈 Changes the mouse to a pointer hand
+                  transition: 'all 0.2s ease',
+                  outline: 'none'
+                }}
+                onMouseOver={(e) => {
+                  // Turns a warning red on hover
+                  e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.15)'; 
+                  e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                  e.currentTarget.style.color = '#f87171';
+                }}
+                onMouseOut={(e) => {
+                  // Returns to standard Pro purple
+                  e.currentTarget.style.backgroundColor = 'rgba(168, 85, 247, 0.15)';
+                  e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.3)';
+                  e.currentTarget.style.color = '#c084fc';
+                }}
+              >
                 👑 Pro
-              </span>
+              </button>
             )}
           </div>
           <button
