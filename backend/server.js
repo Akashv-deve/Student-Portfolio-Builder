@@ -292,6 +292,21 @@ app.post('/api/payment/create-order', authMiddleware, async (req, res) => {
 // POST Route: Verify Payment & Upgrade User (SECURED)
 const User = require('./models/User'); // Ensure User model is required
 
+// GET Route: Check if user is Pro (SECURED)
+app.get('/api/user/status', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Send back their exact Pro status from the database
+    res.status(200).json({ isPro: user.isPro || false });
+  } catch (error) {
+    console.error("Error fetching user status:", error);
+    res.status(500).json({ message: "Error fetching user status" });
+  }
+});
+
 app.post('/api/payment/verify', authMiddleware, async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;

@@ -136,6 +136,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
+      // 1. Fetch their saved portfolio data
       try {
         const response = await fetch(`${API_BASE_URL}/api/portfolio/me`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -144,7 +145,6 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
         if (response.ok) {
           const dbData = await response.json();
           
-          // Overwrite the App.jsx defaults with the user's actual saved data
           setPortfolioData(prevData => ({
             ...prevData,
             slug: dbData.userSlug || '',
@@ -156,7 +156,6 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
               bio: dbData.personalInfo?.bio || '',
               avatar: dbData.personalInfo?.avatar || ''
             },
-            // Fallback to the default arrays if the database arrays are empty
             projects: Array.isArray(dbData.projects) && dbData.projects.length > 0 ? dbData.projects : prevData.projects,
             education: Array.isArray(dbData.education) && dbData.education.length > 0 ? dbData.education : prevData.education,
             skills: Array.isArray(dbData.skills) && dbData.skills.length > 0 ? dbData.skills : prevData.skills,
@@ -166,10 +165,26 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
       } catch (error) {
         console.error('Failed to fetch saved portfolio data:', error);
       }
+
+      // 2. Fetch their Pro Subscription Status from the Database
+      try {
+        const statusRes = await fetch(`${API_BASE_URL}/api/user/status`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (statusRes.ok) {
+          const userData = await statusRes.json();
+          // Restore the Pro status in React AND Local Storage
+          setIsProUser(userData.isPro);
+          localStorage.setItem('isPro', userData.isPro);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user status:', error);
+      }
     };
 
     fetchMyPortfolio();
-  }, []); // The empty array ensures this only runs exactly once when the dashboard opens
+  }, []);
 
   // LOGOUT FUNCTION
   const handleLogout = () => {
