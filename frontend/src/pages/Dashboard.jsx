@@ -124,6 +124,9 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
   // media query below, which only hides panes under 768px.
   const [mobileView, setMobileView] = useState('form');
 
+  // 👇 ADD THIS STATE TO TRACK PRO STATUS
+  const [isProUser, setIsProUser] = useState(localStorage.getItem('isPro') === 'true');
+
   // GRAB THE USER EMAIL
   const userEmail = localStorage.getItem('userEmail') || 'Guest';
 
@@ -350,6 +353,7 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
             
             if (verifyRes.ok) {
               localStorage.setItem('isPro', 'true');
+              setIsProUser(true);
               alert("Payment successful! You are now a Pro user. Publishing your portfolio...");
               executePublish();
             } else {
@@ -540,6 +544,24 @@ const Dashboard = ({ portfolioData, setPortfolioData }) => {
             <span style={{ fontSize: '0.88rem', color: colors.textLabel }}>
               Logged in as: <strong style={{ color: colors.textWhite }}>{userEmail}</strong>
             </span>
+            
+            {/* 👇 INJECTED PRO BADGE 👇 */}
+            {isProUser && (
+              <span style={{
+                backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                color: '#c084fc',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
+                padding: '2px 8px',
+                borderRadius: '999px',
+                fontSize: '0.7rem',
+                fontWeight: 800,
+                marginLeft: '0.25rem',
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase'
+              }}>
+                👑 Pro
+              </span>
+            )}
           </div>
           <button
             onClick={handleLogout}
