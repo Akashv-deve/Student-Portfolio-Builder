@@ -141,6 +141,17 @@ Public portfolio visits are tracked and incremented using MongoDB atomic `$inc` 
 
 ---
 
+## 🧠 Engineering Highlights
+
+- Designed the application as a full-stack monorepo with separate React frontend and Express backend.
+- Implemented JWT authentication and GitHub OAuth with protected API routes.
+- Built slug-based public portfolio routing for user-specific portfolio pages.
+- Implemented server-side Razorpay HMAC SHA256 verification for payment integrity.
+- Used Multer memory buffering with Cloudinary for cloud-based media handling.
+- Added MongoDB-backed portfolio view analytics using atomic increment operations.
+- Added backend tests for the portfolio pipeline.
+- Deployed the frontend and backend separately using Vercel and Render.
+
 ## 📂 Repository Structure
 
 ```text
