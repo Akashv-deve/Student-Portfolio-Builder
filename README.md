@@ -152,6 +152,30 @@ Public portfolio visits are tracked and incremented using MongoDB atomic `$inc` 
 - Added backend tests for the portfolio pipeline.
 - Deployed the frontend and backend separately using Vercel and Render.
 
+
+## 🎬 Typical User Flow
+
+```text
+Sign Up / GitHub Login
+        ↓
+Create Portfolio
+        ↓
+Edit Portfolio Details
+        ↓
+Live Preview
+        ↓
+Upload Profile / Project Images
+        ↓
+Choose / Unlock Premium Features
+        ↓
+Publish Portfolio
+        ↓
+Share Unique Portfolio URL
+        ↓
+Track Portfolio Visits
+
+
+
 ## 📂 Repository Structure
 
 ```text
