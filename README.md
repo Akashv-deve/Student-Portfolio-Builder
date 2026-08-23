@@ -57,3 +57,204 @@ Each user receives a unique public slug, for example:
 
 ```text
 https://student-portfolio-builder-eta.vercel.app/akash-v
+
+The frontend reads the slug, requests the corresponding portfolio from the REST API, and renders the selected template dynamically.
+
+👀 Live Portfolio Preview
+
+Users can edit portfolio information through the builder and see the result through a live preview without leaving the editor.
+
+💳 Pro Tier & Payments
+
+Razorpay is integrated for premium upgrades.
+
+Payment verification is performed on the server using HMAC SHA256 signature verification before the user's Pro status is updated.
+
+🖼️ Cloud Media Pipeline
+
+Profile and project images are processed using:
+
+Multer memory buffering
+Cloudinary cloud storage
+
+This keeps binary media outside the MongoDB database.
+
+📈 Portfolio Analytics
+
+Public portfolio visits are tracked and incremented using MongoDB atomic $inc operations.
+
+🏗️ Architecture
+                         ┌───────────────────────┐
+                         │        Browser        │
+                         └───────────┬───────────┘
+                                     │
+                                     ▼
+                         ┌───────────────────────┐
+                         │ React + Vite Frontend │
+                         │        Vercel         │
+                         └───────────┬───────────┘
+                                     │ REST / JSON
+                                     ▼
+                         ┌───────────────────────┐
+                         │   Node + Express API  │
+                         │         Render        │
+                         └───────┬───────┬───────┘
+                                 │       │
+                    ┌────────────▼───┐ ┌─▼─────────────┐
+                    │ MongoDB Atlas  │ │   Cloudinary  │
+                    │    Database    │ │     Media     │
+                    └────────────────┘ └───────────────┘
+                                 │
+                    ┌────────────▼────────────┐
+                    │ GitHub OAuth + Razorpay │
+                    └─────────────────────────┘
+🛠️ Tech Stack
+Frontend
+React
+Vite
+React Router DOM
+Custom CSS
+Vercel
+Backend
+Node.js
+Express.js
+Mongoose
+MongoDB Atlas
+JWT
+GitHub OAuth
+Multer
+Cloudinary
+Razorpay
+Render
+📂 Repository Structure
+Student-Portfolio-Builder/
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   └── .env.example
+│
+├── backend/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── tests/
+│   ├── server.js
+│   ├── package.json
+│   └── .env.example
+│
+├── screenshots/
+└── README.md
+💻 Local Development
+Prerequisites
+Node.js 20+
+MongoDB Atlas or MongoDB
+GitHub OAuth application
+Cloudinary account
+Razorpay account for payment testing
+1. Clone the repository
+git clone https://github.com/Akashv-deve/Student-Portfolio-Builder.git
+cd Student-Portfolio-Builder
+2. Start the backend
+cd backend
+npm install
+
+Create:
+
+backend/.env
+
+Use backend/.env.example as the reference for required variables.
+
+Start the backend:
+
+npm run dev
+3. Start the frontend
+
+Open another terminal:
+
+cd frontend
+npm install
+
+Create:
+
+frontend/.env
+
+Use frontend/.env.example as the reference for required variables.
+
+Start the frontend:
+
+npm run dev
+🔐 Environment & Security
+
+Environment files are intentionally excluded from version control.
+
+Never commit:
+
+.env
+
+Use the example files instead:
+
+frontend/.env.example
+backend/.env.example
+
+Backend secrets such as database credentials, JWT secrets, OAuth client secrets, Cloudinary secrets, and Razorpay secrets must remain server-side.
+
+🧪 Testing
+
+Backend tests are available under:
+
+backend/tests/
+
+Run the backend test suite with:
+
+cd backend
+npm test
+☁️ Deployment
+Frontend
+
+Hosted on:
+
+Vercel
+
+Backend
+
+Hosted on:
+
+Render
+
+Database
+
+Hosted on:
+
+MongoDB Atlas
+
+Media
+
+Hosted on:
+
+Cloudinary
+
+Payments
+
+Handled through:
+
+Razorpay
+
+🔮 Future Improvements
+
+Potential future improvements include:
+
+Additional portfolio templates
+More advanced analytics
+Improved accessibility
+Automated testing coverage
+Additional customization options
+More deployment automation
+👤 Author
+
+Akash V
+
+GitHub: Akashv-deve
+LinkedIn: akashv-deve
+Live Project: Student Portfolio Builder
