@@ -293,7 +293,3 @@ npm test
 * GitHub: [Akashv-deve](https://www.google.com/search?q=https://github.com/Akashv-deve)
 * LinkedIn: akashv-deve
 * Live Project: [Student Portfolio Builder](https://student-portfolio-builder-eta.vercel.app/)
-
-```
-
-```
