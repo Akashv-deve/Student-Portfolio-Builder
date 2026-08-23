@@ -46,44 +46,47 @@ Student Portfolio Builder is a full-stack SaaS application that allows users to:
 ## ✨ Key Features
 
 ### 🔐 Dual Authentication
-
 - Email/password authentication using JWT
 - GitHub OAuth login
 - Protected backend routes
 
 ### 🔗 Dynamic Portfolio URLs
-
 Each user receives a unique public slug, for example:
 
 ```text
-https://student-portfolio-builder-eta.vercel.app/akash-v
+[https://student-portfolio-builder-eta.vercel.app/akash-v](https://student-portfolio-builder-eta.vercel.app/akash-v)
+
+```
 
 The frontend reads the slug, requests the corresponding portfolio from the REST API, and renders the selected template dynamically.
 
-👀 Live Portfolio Preview
+### 👀 Live Portfolio Preview
 
 Users can edit portfolio information through the builder and see the result through a live preview without leaving the editor.
 
-💳 Pro Tier & Payments
+### 💳 Pro Tier & Payments
 
-Razorpay is integrated for premium upgrades.
+* Razorpay is integrated for premium upgrades.
+* Payment verification is performed on the server using HMAC SHA256 signature verification before the user's Pro status is updated.
 
-Payment verification is performed on the server using HMAC SHA256 signature verification before the user's Pro status is updated.
-
-🖼️ Cloud Media Pipeline
+### 🖼️ Cloud Media Pipeline
 
 Profile and project images are processed using:
 
-Multer memory buffering
-Cloudinary cloud storage
+* Multer memory buffering
+* Cloudinary cloud storage
 
 This keeps binary media outside the MongoDB database.
 
-📈 Portfolio Analytics
+### 📈 Portfolio Analytics
 
-Public portfolio visits are tracked and incremented using MongoDB atomic $inc operations.
+Public portfolio visits are tracked and incremented using MongoDB atomic `$inc` operations.
 
-🏗️ Architecture
+---
+
+## 🏗️ Architecture
+
+```text
                          ┌───────────────────────┐
                          │        Browser        │
                          └───────────┬───────────┘
@@ -108,25 +111,39 @@ Public portfolio visits are tracked and incremented using MongoDB atomic $inc op
                     ┌────────────▼────────────┐
                     │ GitHub OAuth + Razorpay │
                     └─────────────────────────┘
-🛠️ Tech Stack
-Frontend
-React
-Vite
-React Router DOM
-Custom CSS
-Vercel
-Backend
-Node.js
-Express.js
-Mongoose
-MongoDB Atlas
-JWT
-GitHub OAuth
-Multer
-Cloudinary
-Razorpay
-Render
-📂 Repository Structure
+
+```
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+
+* React
+* Vite
+* React Router DOM
+* Custom CSS
+* Vercel
+
+**Backend:**
+
+* Node.js
+* Express.js
+* Mongoose
+* MongoDB Atlas
+* JWT
+* GitHub OAuth
+* Multer
+* Cloudinary
+* Razorpay
+* Render
+
+---
+
+## 📂 Repository Structure
+
+```text
 Student-Portfolio-Builder/
 │
 ├── frontend/
@@ -146,115 +163,137 @@ Student-Portfolio-Builder/
 │
 ├── screenshots/
 └── README.md
-💻 Local Development
-Prerequisites
-Node.js 20+
-MongoDB Atlas or MongoDB
-GitHub OAuth application
-Cloudinary account
-Razorpay account for payment testing
-1. Clone the repository
-git clone https://github.com/Akashv-deve/Student-Portfolio-Builder.git
+
+```
+
+---
+
+## 💻 Local Development
+
+### Prerequisites
+
+* Node.js 20+
+* MongoDB Atlas or MongoDB
+* GitHub OAuth application
+* Cloudinary account
+* Razorpay account for payment testing
+
+### 1. Clone the repository
+
+```bash
+git clone [https://github.com/Akashv-deve/Student-Portfolio-Builder.git](https://github.com/Akashv-deve/Student-Portfolio-Builder.git)
 cd Student-Portfolio-Builder
-2. Start the backend
+
+```
+
+### 2. Start the backend
+
+```bash
 cd backend
 npm install
 
-Create:
+```
 
+Create a `.env` file in the `backend` directory:
+
+```bash
 backend/.env
 
-Use backend/.env.example as the reference for required variables.
+```
+
+*Use `backend/.env.example` as the reference for required variables.*
 
 Start the backend:
 
+```bash
 npm run dev
-3. Start the frontend
+
+```
+
+### 3. Start the frontend
 
 Open another terminal:
 
+```bash
 cd frontend
 npm install
 
-Create:
+```
 
+Create a `.env` file in the `frontend` directory:
+
+```bash
 frontend/.env
 
-Use frontend/.env.example as the reference for required variables.
+```
+
+*Use `frontend/.env.example` as the reference for required variables.*
 
 Start the frontend:
 
+```bash
 npm run dev
-🔐 Environment & Security
 
-Environment files are intentionally excluded from version control.
+```
 
-Never commit:
+---
 
-.env
+## 🔐 Environment & Security
+
+Environment files are intentionally excluded from version control. Never commit `.env`.
 
 Use the example files instead:
 
-frontend/.env.example
-backend/.env.example
+* `frontend/.env.example`
+* `backend/.env.example`
 
 Backend secrets such as database credentials, JWT secrets, OAuth client secrets, Cloudinary secrets, and Razorpay secrets must remain server-side.
 
-🧪 Testing
+---
 
-Backend tests are available under:
+## 🧪 Testing
 
-backend/tests/
+Backend tests are available under `backend/tests/`.
 
 Run the backend test suite with:
 
+```bash
 cd backend
 npm test
-☁️ Deployment
-Frontend
 
-Hosted on:
+```
 
-Vercel
+---
 
-Backend
+## ☁️ Deployment
 
-Hosted on:
+* **Frontend:** Hosted on Vercel
+* **Backend:** Hosted on Render
+* **Database:** Hosted on MongoDB Atlas
+* **Media:** Hosted on Cloudinary
+* **Payments:** Handled through Razorpay
 
-Render
+---
 
-Database
+## 🔮 Future Improvements
 
-Hosted on:
+* Additional portfolio templates
+* More advanced analytics
+* Improved accessibility
+* Automated testing coverage
+* Additional customization options
+* More deployment automation
 
-MongoDB Atlas
+---
 
-Media
+## 👤 Author
 
-Hosted on:
+**Akash V**
 
-Cloudinary
+* GitHub: [Akashv-deve](https://www.google.com/search?q=https://github.com/Akashv-deve)
+* LinkedIn: akashv-deve
+* Live Project: [Student Portfolio Builder](https://student-portfolio-builder-eta.vercel.app/)
 
-Payments
+```
 
-Handled through:
-
-Razorpay
-
-🔮 Future Improvements
-
-Potential future improvements include:
-
-Additional portfolio templates
-More advanced analytics
-Improved accessibility
-Automated testing coverage
-Additional customization options
-More deployment automation
-👤 Author
-
-Akash V
-
-GitHub: Akashv-deve
-LinkedIn: akashv-deve
-Live Project: Student Portfolio Builder
+```
