@@ -13,8 +13,6 @@ A full-stack Software-as-a-Service (SaaS) platform designed to help students and
 
 ## 📸 Platform Previews
 
-*(Replace these placeholder images with your actual screenshots)*
-
 ![Landing Page](./screenshots/landing.png)
 *Modern, highly responsive landing page.*
 
@@ -30,6 +28,8 @@ A full-stack Software-as-a-Service (SaaS) platform designed to help students and
 * **Premium Monetization (Razorpay):** Integrated Razorpay payment gateway with server-side signature verification (HMAC SHA256) to securely handle upgrades to the "Pro" tier, unlocking premium templates.
 * **Cloud Media Pipeline:** Implemented `multer` for memory buffering and `Cloudinary` for secure, optimized image hosting (profile avatars and project thumbnails), keeping the MongoDB database lightweight.
 * **Real-Time Analytics:** Built-in view tracking that increments via MongoDB `$inc` operators whenever a public portfolio is visited.
+
+---
 
 ## 🛠️ Technical Stack
 
@@ -53,10 +53,9 @@ A full-stack Software-as-a-Service (SaaS) platform designed to help students and
 To run this project locally, you will need Node.js and a MongoDB instance running.
 
 ### 1. Clone the repository
-\`\`\`bash
-git clone https://github.com/Akashv-deve/Student-Portfolio-Builder.git
+```bash
+git clone [https://github.com/Akashv-deve/Student-Portfolio-Builder.git](https://github.com/Akashv-deve/Student-Portfolio-Builder.git)
 cd Student-Portfolio-Builder
-\`\`\`
 
 ### 2. Backend Setup
 \`\`\`bash
